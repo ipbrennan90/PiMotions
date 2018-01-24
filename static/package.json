@@ -1,0 +1,46 @@
+{
+  "name": "take-my-picture",
+  "version": "1.0.0",
+  "description": "simple web app to take and display raspberry pi camera pictures",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p --progress --config webpack.config.js",
+    "dev-build": "webpack --progress -d --config webpack.config.js",
+    "watch": "webpack --progress -d --config webpack.config.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipbrennan90/take-my-picture.git"
+  },
+  "keywords": [
+    "picture",
+    "raspberry",
+    "pi",
+    "zero",
+    "raspberry",
+    "pi",
+    "motion",
+    "motion",
+    "activated",
+    "motion",
+    "detection",
+    "computer",
+    "vision",
+    "computer",
+    "vision"
+  ],
+  "author": "Ian Brennan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ipbrennan90/take-my-picture/issues"
+  },
+  "homepage": "https://github.com/ipbrennan90/take-my-picture#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^3.10.0"
+  }
+}
