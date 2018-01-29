@@ -1,4 +1,4 @@
-FROM resin/raspberrypi3-python:latest
+FROM resin/%%RESIN_MACHINE_NAME%%-python:latest
 RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 # Install node
 RUN curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash - && sudo apt install nodejs
