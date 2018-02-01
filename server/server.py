@@ -23,7 +23,6 @@ def take_picture():
     
     try:
         camera = picamera.PiCamera()
-        time.sleep(2)
         tempdir = tempfile.mkdtemp()
         date = datetime.now()
         filename = 'capture-{}.jpg'.format(date)
