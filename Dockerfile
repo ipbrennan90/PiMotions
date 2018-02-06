@@ -13,7 +13,6 @@ WORKDIR /static
 RUN $HOME/.yarn/bin/yarn install
 COPY ./static/index.html /static/index.html
 COPY ./static/js /static/js
-COPY ./justin_smells.jpeg /justin_smells.jpeg
 RUN $HOME/.yarn/bin/yarn build
 COPY ./server/requirements.txt /server/requirements.txt
 WORKDIR /server
