@@ -20,9 +20,9 @@ def index():
 @app.route('/take')
 def take_picture():
     img_str = ''
+    camera = picamera.PiCamera()
     
     try:
-        camera = picamera.PiCamera()
         tempdir = tempfile.mkdtemp()
         date = datetime.now()
         filename = 'capture-{}.jpg'.format(date)
@@ -33,15 +33,16 @@ def take_picture():
     except (ValueError, RuntimeError, TypeError, NameError):
         logging.exception("could not capture image")
     finally:
-        response = Response(
-            response = json.dumps({
-                'data': 'data:image/jpeg;base64,' + img_str
-            }),
-            status = 200,
-            mimetype='application/json'
-        )
-        camera.close()
-        return response
+        print("captured image")
+    response = Response(
+        response = json.dumps({
+            'data': 'data:image/jpeg;base64,' + img_str
+        }),
+        status = 200,
+        mimetype='application/json'
+    )
+    camera.close()
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=80)

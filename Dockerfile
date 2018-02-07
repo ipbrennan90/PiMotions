@@ -1,8 +1,5 @@
-FROM resin/raspberrypi-python
-ENV INITSYSTEM on
-RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
-# Install node
-RUN curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash - && sudo apt install nodejs
+FROM python:3
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/* && curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash - && sudo apt install nodejs
 # Install Yarn
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash 
 COPY ./static/yarn.lock /static/yarn.lock
