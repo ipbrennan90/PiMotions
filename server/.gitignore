@@ -13,3 +13,4 @@ test_project
 Pipfile.lock
 /.vscode/
 .idea
+*config.py

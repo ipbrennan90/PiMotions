@@ -10,7 +10,16 @@ import os
 try:
     import local_config
 except ImportError:
-    logging.exception("no config defined")
+    # we want to fail silently here since all this means is that
+    # we are running on pi, not locally
+   pass
+
+try:
+    import picamera
+except ImportError:
+    logging.debug("if you aren't running this on pi disregard this error")
+
+import pdb
 
 
 
@@ -18,10 +27,9 @@ app = Flask(__name__, static_folder="../static/dist", template_folder="../static
 
 
 def check_pi():
-    if os.environ["PI"] == "none":
+    if "PI" in os.environ and os.environ["PI"] == "none":
         return False
     else:
-        import picamera
         return True
     
 @app.route('/')
@@ -31,7 +39,7 @@ def index():
 @app.route('/take')
 def take_picture():
     is_pi = check_pi()
-    if not is_pi:
+    if is_pi == False:
         response = Response(
             response = json.dumps({
                 'data': 'no image'
