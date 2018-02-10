@@ -34,7 +34,11 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 2. Clone: `git@github.com:your-username/take-my-picture.git`
 3. Navigate into the directory: `cd take-my-picture`
 
-### 2. Get the app running locally (?)
+### 2. Get the app running locally
+1. `mv server/local_config.template.py server/local_config.py`
+2. `docker build -t <your_container_name> .`
+3. `docker run -d -p 80:80 <your_container_name>:latest`
+4. navigate to `localhost:80` in your browser, you should see the app running there
 TODO
 
 ### 3. Set up a Resin.io account and application
