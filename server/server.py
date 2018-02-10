@@ -1,5 +1,4 @@
 from flask import Flask, Response, render_template, send_file, json
-import picamera
 from io import BytesIO
 import base64
 import time
@@ -8,17 +7,39 @@ import tempfile
 import logging
 from datetime import datetime
 import os
+try:
+    import local_config
+except ImportError:
+    logging.exception("no config defined")
 
 
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
 
+
+def check_pi():
+    if os.environ["PI"] == "none":
+        return False
+    else:
+        import picamera
+        return True
+    
 @app.route('/')
 def index():
     return render_template("index.html")
 
 @app.route('/take')
 def take_picture():
+    is_pi = check_pi()
+    if not is_pi:
+        response = Response(
+            response = json.dumps({
+                'data': 'no image'
+            }),
+            status = 200,
+            mimetype='application/json'
+        )
+        return response
     img_str = ''
     camera = picamera.PiCamera()
     
