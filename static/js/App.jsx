@@ -21,7 +21,7 @@ const containerStyle = {
 
 const piConditionalStyle = {
   width: "200px",
-  height: "60px",
+  height: "80px",
 }
 
 const imageStyle = {

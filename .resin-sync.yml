@@ -1,6 +1,6 @@
 local_resinos: {}
 uuid: 0a84c9ff0e99ce20316960ac94ebb733
-destination: /server
+destination: /static
 ignore:
   - .git
   - node_modules/

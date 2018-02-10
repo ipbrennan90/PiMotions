@@ -14,13 +14,8 @@ except ImportError:
     # we are running on pi, not locally
    pass
 
-try:
+if "PI" not in os.environ:
     import picamera
-except ImportError:
-    logging.debug("if you aren't running this on pi disregard this error")
-
-import pdb
-
 
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
