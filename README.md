@@ -39,7 +39,6 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 2. `docker build -t <your_container_name> .`
 3. `docker run -d -p 80:80 <your_container_name>:latest`
 4. navigate to `localhost:80` in your browser, you should see the app running there
-TODO
 
 ### 3. Set up a Resin.io account and application
 
@@ -61,3 +60,9 @@ TODO: flash pi with resin image
 TODO:
 diagram explaining setup
 clicking the button, taking a picture, walking through the code.
+
+### 6. Resin sync
+1. `npm install --global --production resin-cli`
+2. `resin login` you should be able to chose web authentication option
+3. if you want to sync server files `resin sync --source ./server --destination /server`
+4. currently we cannot sync static files since they require a build step that cannot be done via resin sync
