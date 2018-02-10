@@ -6,6 +6,16 @@ const imgStyle = {
   width: "200px",
 }
 
+const buttonStyle = {
+  height: "20px",
+  width: "200px",
+}
+
+const containerStyle = {
+  display: "flex",
+  justifyContents: "center",
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -17,7 +27,6 @@ export default class App extends Component {
 
   handleClick() {
     axios.get("/take").then(resp => {
-      console.log("i am the egg man")
       this.setState({image: resp.data.data})
     })
   }
@@ -25,10 +34,12 @@ export default class App extends Component {
   render() {
     console.log(this.state)
     return (
-      <div>
+      <div style={containerStyle}>
         <p>This is a picture hear it roar</p>
         <img style={imgStyle} src={this.state.image} />
-        <button onClick={this.handleClick}>BUTTON</button>
+        <button style={buttonStyle} onClick={this.handleClick}>
+          BUTTON
+        </button>
       </div>
     )
   }
