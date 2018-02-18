@@ -18,10 +18,9 @@ RUN_CAM = False
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app)
-        
 
-@app.route('/take')
-def take_picture():
+
+def snap():
     img_str = ''
     camera = picamera.PiCamera()
     
@@ -35,6 +34,13 @@ def take_picture():
             img_str = base64.b64encode(imageFile.read())
     except (ValueError, RuntimeError, TypeError, NameError):
         logging.exception("could not capture image")
+    finally:
+        camera.close()
+    return  'data:image/jpeg;base64,' + img_str
+
+@app.route('/take')
+def take_picture():
+    img_str = snap()
     response = Response(
         response = json.dumps({
             'src': 'data:image/jpeg;base64,' + img_str
@@ -42,7 +48,6 @@ def take_picture():
         status = 200,
         mimetype='application/json'
     )
-    camera.close()
     return response
 
 @socketio.on('motion')
@@ -53,7 +58,8 @@ def check_motion(message):
     @copy_current_request_context
     def run_motion_cam(emit_func):
         while RUN_CAM:
-            emit_func("detector running", {'data': 'running running and running running'})
+            img_str = snap()
+            emit_func("detector running", {'pic': img_str})
             time.sleep(5)
         
     def run_detector(run_cam, emit_func):

@@ -17,18 +17,17 @@ export default class App extends Component {
 
     this.handleClick = this.handleClick.bind(this)
     this.chooseCam = this.chooseCam.bind(this)
+    this.turnOnMotion = this.turnOnMotion.bind(this)
+    this.addPic = this.addPic.bind(this)
     this.camera = null
 
     this.state = {
       image: sxsw,
       webCam: false,
       takeOnPi: true,
+      pics: [],
     }
-
-    socket.on('connect', () => console.log('connected'))
-    socket.on('event', data => console.log(data))
-    socket.on('motion response', data => console.log(data))
-    socket.on('disconnect', () => console.log('disconnected :('))
+    this.turnOnSocket()
   }
 
   chooseCam(e) {
@@ -43,6 +42,13 @@ export default class App extends Component {
     }
   }
 
+  turnOnSocket() {
+    socket.on('connect', () => console.log('connected'))
+    socket.on('motion response', data => console.log(data))
+    socket.on('detector running', data => this.addPic(data))
+    socket.on('disconnect', () => console.log('disconnected :('))
+  }
+
   handleClick() {
     if (this.state.takeOnPi) {
       Pi.takePicture().then(picture => {
@@ -54,7 +60,25 @@ export default class App extends Component {
   }
 
   turnOnMotion() {
-    socket.emit('motion on', 'hello world')
+    if (this.state.motionDetector === 'on') {
+      socket.emit('motion', 'off')
+      this.setState({ motionDetector: 'off' })
+    } else {
+      socket.emit('motion', 'on')
+      this.setState({ motionDetector: 'on' })
+    }
+  }
+  addPic(data) {
+    const { pic } = data
+    this.setState(prevState => {
+      pics: prevState.pics.push(pic)
+    })
+  }
+
+  renderPicStream(pics) {
+    return pics.map(pic => {
+      return <img style={imgStyle} src={pic} />
+    })
   }
 
   render() {
@@ -75,8 +99,10 @@ export default class App extends Component {
           Take Picture
         </button>
         <button className="button" onClick={this.turnOnMotion}>
-          DETECT MOTION
+          TURN MOTION DETECTOR{' '}
+          {this.state.motionDetector === 'on' ? 'OFF' : 'ON'}
         </button>
+        {pics.length > 0 && this.renderPicStream(pics)}
 
         <hr />
         <footer className="footer">
