@@ -9,12 +9,12 @@ from datetime import datetime
 import os
 import picamera
 from flask_cors import CORS, cross_origin
-from flask_sockets import Sockets
+from flask_socketio import SocketIO, emit
 
 
 app = Flask(__name__)
 CORS(app)
-Sockets(app)
+socketio = SocketIO(app)
 
 @app.route('/take')
 def take_picture():
@@ -41,16 +41,10 @@ def take_picture():
     camera.close()
     return response
 
-@sockets.route('/motion')
-def check_motion(ws):
-    if request.args.get('state') == 'on':
-        while not ws.closed:
-            message = ws.receive
-            ws.send(message)
+@socketio.on('motion on')
+def check_motion(message):
+    emit('motion response', {'data': 'looking for motion!'})
         
 
 if __name__ == "__main__":
-    from gevent import pywsgi
-    from geventwebsocket.handler import WebSocketHandler
-    server = pywsgi.WSGIServer(('', 80), app, handler_class=WebSocketHandler)
-    server.serve_forever()
+    socketio.run(app, debug=True, host='0.0.0.0', port=80)

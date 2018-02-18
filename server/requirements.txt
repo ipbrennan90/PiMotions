@@ -3,4 +3,4 @@ flask-cors==3.0.3
 picamera==1.13
 Pillow==4.3.0
 requests==2.18.4
-Flask-Sockets==0.2.1
+flask-socketio==2.9.3
