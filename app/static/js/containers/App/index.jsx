@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import io from 'socket.io-client'
 import { PiConditional, Camera } from '../../components'
 import { getMedia, snapshot } from '../../util'
 import { Pi } from '../../services'
@@ -7,6 +8,8 @@ import './style.css'
 import rpi from '../../../assets/raspberrypi.png'
 import resin from '../../../assets/resin.png'
 import sxsw from '../../../assets/sxsw.png'
+
+const socket = io(process.env.RASPI_URL)
 
 export default class App extends Component {
   constructor(props) {
@@ -21,6 +24,11 @@ export default class App extends Component {
       webCam: false,
       takeOnPi: true,
     }
+
+    socket.on('connect', () => console.log('connected'))
+    socket.on('event', data => console.log(data))
+    socket.on('motion response', data => console.log(data))
+    socket.on('disconnect', () => console.log('disconnected :('))
   }
 
   chooseCam(e) {
@@ -45,6 +53,10 @@ export default class App extends Component {
     }
   }
 
+  turnOnMotion() {
+    socket.emit('motion on', 'hello world')
+  }
+
   render() {
     const { isPi, takeOnPi, image } = this.state
 
@@ -62,6 +74,10 @@ export default class App extends Component {
         <button className="button trigger" onClick={this.handleClick}>
           Take Picture
         </button>
+        <button className="button" onClick={this.turnOnMotion}>
+          DETECT MOTION
+        </button>
+
         <hr />
         <footer className="footer">
           <a href="https://raspberrypi.org/" target="_blank">
