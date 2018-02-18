@@ -1,7 +1,5 @@
 FROM resin/%%RESIN_MACHINE_NAME%%-python
 ENV INITSYSTEM on
-# System Update
-RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 # Resin wifi connect
 WORKDIR /usr/src/app
 RUN curl https://api.github.com/repos/resin-io/resin-wifi-connect/releases/latest -s \
