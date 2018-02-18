@@ -27,6 +27,22 @@ export default class App extends Component {
       takeOnPi: true,
       pics: [],
     }
+  }
+
+  turnOnSocket() {
+    socket.on('connect', () => console.log('connected'))
+    socket.on('motion response', data => console.log(data))
+    socket.on('detector running', data => {
+      console.log(data)
+      let { pics } = this.state
+      pics.push(data.pic)
+
+      this.setState({ pics })
+    })
+    socket.on('disconnect', () => console.log('disconnected :('))
+  }
+
+  componentDidMount() {
     this.turnOnSocket()
   }
 
@@ -42,13 +58,6 @@ export default class App extends Component {
     }
   }
 
-  turnOnSocket() {
-    socket.on('connect', () => console.log('connected'))
-    socket.on('motion response', data => console.log(data))
-    socket.on('detector running', data => this.addPic(data))
-    socket.on('disconnect', () => console.log('disconnected :('))
-  }
-
   handleClick() {
     if (this.state.takeOnPi) {
       Pi.takePicture().then(picture => {
@@ -62,12 +71,13 @@ export default class App extends Component {
   turnOnMotion() {
     if (this.state.motionDetector === 'on') {
       socket.emit('motion', 'off')
-      this.setState({ motionDetector: 'off' })
+      this.setState({ pics: [], motionDetector: 'off' })
     } else {
       socket.emit('motion', 'on')
       this.setState({ motionDetector: 'on' })
     }
   }
+
   addPic(data) {
     const { pic } = data
     this.setState(prevState => {
@@ -82,7 +92,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { isPi, takeOnPi, image } = this.state
+    const { isPi, takeOnPi, image, pics } = this.state
 
     return (
       <div className="container">
@@ -102,7 +112,7 @@ export default class App extends Component {
           TURN MOTION DETECTOR{' '}
           {this.state.motionDetector === 'on' ? 'OFF' : 'ON'}
         </button>
-        {pics.length > 0 && this.renderPicStream(pics)}
+        {this.renderPicStream(pics)}
 
         <hr />
         <footer className="footer">

@@ -83,6 +83,11 @@ def check_motion(message):
     logging.debug(response)
     emit('motion response', {'data': response})
     run_detector(RUN_CAM, emit)
+
+@socketio.on('disconnect')
+def stop_detector():
+    global RUN_CAM
+    RUN_CAM = False
         
 
 if __name__ == "__main__":
