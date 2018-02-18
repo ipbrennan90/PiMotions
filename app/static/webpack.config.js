@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 
 const config = {
     entry: __dirname + '/js/index.jsx',
@@ -19,6 +20,11 @@ const config = {
             }
         ]
     },
+    plugins: [
+        new Dotenv({
+            path: './.env', // Path to .env file (this is the default) 
+        })
+    ],
     watch: true,
     watchOptions: {
         poll: 1000

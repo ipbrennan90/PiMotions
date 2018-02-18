@@ -58,8 +58,9 @@ export default class App extends Component {
   }
 
   handleClick() {
+    console.log(process.env.raspiurl)
     if (this.state.takeOnPi) {
-      axios.get("/take").then(resp => {
+      axios.get(`${process.env.RASPI_URL}/take`).then(resp => {
         this.setState({image: resp.data.data})
       })
     } else {
