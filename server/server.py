@@ -1,4 +1,4 @@
-from flask import Flask, Response, send_file, json
+from flask import Flask, Response, send_file, json, request
 from io import BytesIO
 import base64
 import time
@@ -9,10 +9,12 @@ from datetime import datetime
 import os
 import picamera
 from flask_cors import CORS, cross_origin
+from flask_sockets import Sockets
 
 
 app = Flask(__name__)
 CORS(app)
+Sockets(app)
 
 @app.route('/take')
 def take_picture():
@@ -29,8 +31,6 @@ def take_picture():
             img_str = base64.b64encode(imageFile.read())
     except (ValueError, RuntimeError, TypeError, NameError):
         logging.exception("could not capture image")
-    finally:
-        print("captured image")
     response = Response(
         response = json.dumps({
             'src': 'data:image/jpeg;base64,' + img_str
@@ -41,5 +41,16 @@ def take_picture():
     camera.close()
     return response
 
+@sockets.route('/motion')
+def check_motion(ws):
+    if request.args.get('state') == 'on':
+        while not ws.closed:
+            message = ws.receive
+            ws.send(message)
+        
+
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=80)
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    server = pywsgi.WSGIServer(('', 80), app, handler_class=WebSocketHandler)
+    server.serve_forever()
