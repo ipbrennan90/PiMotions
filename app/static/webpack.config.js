@@ -18,6 +18,10 @@ const config = {
                 use: 'babel-loader'
             }
         ]
+    },
+    watch: true,
+    watchOptions: {
+        poll: 1000
     }
 }
 

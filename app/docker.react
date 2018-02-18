@@ -1,0 +1,12 @@
+FROM node:latest
+
+WORKDIR /app
+COPY . /app
+# update
+COPY . /app
+
+WORKDIR /app/static
+
+RUN npm install
+
+CMD ["npm", "run",  "watch"]

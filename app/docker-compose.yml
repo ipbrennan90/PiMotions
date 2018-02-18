@@ -1,0 +1,28 @@
+version: '2'
+services:
+  python:
+    build:
+      context: .
+      dockerfile: docker.python
+    image: python-flask
+    container_name: take-my-picture-server
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+      - wwwroot:/wwwroot
+  webpack:
+    build:
+      context: .
+      dockerfile: docker.react
+    image: react
+    container_name: take-my-picture-react
+    ports:
+      - "35729:35729"
+    volumes:
+      - .:/app
+      - /app/static/node_modules
+      - wwwroot:/wwwroot
+volumes:
+  wwwroot:
+    driver: local

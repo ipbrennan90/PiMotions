@@ -44,30 +44,16 @@ export default class App extends Component {
     }
   }
 
-  componentDidMount() {
-    const app = this
-    navigator.getMedia =
-      navigator.getUserMedia || // use the proper vendor prefix
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia ||
-      navigator.msGetUserMedia
-
-    navigator.getMedia(
-      {video: true},
-      function() {
-        app.setState({webCam: true})
-      },
-      function() {
-        alert("NO WEBCAM")
-      },
-    )
-  }
-
   chooseCam(cam) {
     if (cam === "pi") {
       this.setState({takeOnPi: true})
     } else {
-      this.setState({takeOnPi: false})
+      window.navigator.mediaDevices
+        .getUserMedia({video: true})
+        .then(() => {
+          this.setState({webCam: true, takeOnPi: false})
+        })
+        .catch(e => console.error(e))
     }
   }
 
