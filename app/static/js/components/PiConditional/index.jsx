@@ -1,20 +1,20 @@
-import React from "react"
-import PropTypes from "prop-types"
-import "./style.css"
+import React from 'react'
+import PropTypes from 'prop-types'
+import './style.css'
 
 const PiConditional = ({chooseCam}) => (
   <div className="pi_conditional">
     <p>Use camera on pi?</p>
     <button
       onClick={() => {
-        chooseCam("pi")
+        chooseCam('pi')
       }}
     >
       YES
     </button>
     <button
       onClick={() => {
-        chooseCam("web")
+        chooseCam('web')
       }}
     >
       NO

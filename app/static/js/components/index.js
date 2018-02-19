@@ -1,3 +1,4 @@
+import Camera from './Camera'
 import PiConditional from './PiConditional'
 
-export {PiConditional}
+export {Camera, PiConditional}

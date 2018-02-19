@@ -33,7 +33,7 @@ def take_picture():
         print("captured image")
     response = Response(
         response = json.dumps({
-            'data': 'data:image/jpeg;base64,' + img_str
+            'src': 'data:image/jpeg;base64,' + img_str
         }),
         status = 200,
         mimetype='application/json'
