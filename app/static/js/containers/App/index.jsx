@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import axios from 'axios'
 import './style.css'
 import {getMedia, snapshot} from '../../util'
 import {Pi} from '../../services'
@@ -39,12 +38,16 @@ export default class App extends Component {
   }
 
   render() {
-    const {takeOnPi} = this.state
+    const {takeOnPi, image} = this.state
 
     return (
       <div className="container">
         <PiConditional chooseCam={this.chooseCam} />
-        <Camera innerRef={camera => (this.camera = camera)} />
+        <Camera
+          innerRef={camera => (this.camera = camera)}
+          takeOnPi={takeOnPi}
+          image={image}
+        />
         <button className="button" onClick={this.handleClick}>
           TAKE PICTURE
         </button>

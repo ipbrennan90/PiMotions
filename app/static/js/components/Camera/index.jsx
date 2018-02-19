@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactCamera from 'simple-react-camera'
 
-const Camera = ({innerRef}) => (
+const Camera = ({innerRef, takeOnPi, image}) => (
   <div className="image_container">
     {!takeOnPi && (
       <ReactCamera
@@ -12,12 +12,14 @@ const Camera = ({innerRef}) => (
         height={500}
       />
     )}
-    <img className="image" src={this.state.image} />
+    <img className="image" src={image} />
   </div>
 )
 
 Camera.propTypes = {
   innerRef: PropTypes.func,
+  takeOnPi: PropTypes.bool,
+  image: PropTypes.string,
 }
 
 export default Camera

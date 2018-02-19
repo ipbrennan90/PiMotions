@@ -1,3 +1,3 @@
-import Pi from './api'
+import * as Pi from './pi'
 
 export { Pi } 
