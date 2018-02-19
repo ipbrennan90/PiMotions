@@ -2,11 +2,13 @@ import React, {Component} from "react"
 import ReactCamera from "simple-react-camera"
 import axios from "axios"
 import "./App.css"
-import {getDevices} from "./util"
+import {getMedia, snapshot} from "./util"
+import {PiConditional} from "./components"
 
 export default class App extends Component {
   constructor(props) {
     super(props)
+    debugger
     this.handleClick = this.handleClick.bind(this)
     this.chooseCam = this.chooseCam.bind(this)
     this.camera = null
@@ -21,27 +23,19 @@ export default class App extends Component {
     if (cam === "pi") {
       this.setState({takeOnPi: true})
     } else {
-      getDevices(navigator, () => {
+      getMedia(navigator, () => {
         this.setState({webCam: true, takeOnPi: false})
       })
     }
   }
 
   handleClick() {
-    console.log(process.env.raspiurl)
     if (this.state.takeOnPi) {
       axios.get(`${process.env.RASPI_URL}/take`).then(resp => {
         this.setState({image: resp.data.data})
       })
     } else {
-      this.camera
-        .snapshot()
-        .then(data => {
-          /* data: string (base-64-jqeg)
-               Process your data here*/
-          this.setState({image: data})
-        })
-        .catch(console.error)
+      snapshot(this.camera, this)
     }
   }
 
@@ -50,23 +44,7 @@ export default class App extends Component {
 
     return (
       <div className="container">
-        <div className="pi_conditional">
-          <p>Use camera on pi?</p>
-          <button
-            onClick={() => {
-              this.chooseCam("pi")
-            }}
-          >
-            YES
-          </button>
-          <button
-            onClick={() => {
-              this.chooseCam("web")
-            }}
-          >
-            NO
-          </button>
-        </div>
+        <PiConditional chooseCam={this.chooseCam} />
         <div className="image_container">
           {!takeOnPi && (
             <ReactCamera

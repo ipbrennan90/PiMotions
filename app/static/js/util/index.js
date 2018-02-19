@@ -1,3 +1,4 @@
-import getDevices from './get-devices'
+import {getMedia} from './get-devices'
+import {snapshot} from './snapshot'
 
-export { getDevices }
+export { getMedia, snapshot }
