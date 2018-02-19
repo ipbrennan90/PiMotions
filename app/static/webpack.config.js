@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
-
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
     entry: __dirname + '/js/index.jsx',
@@ -21,10 +21,7 @@ const config = {
             },
             {
                 test: /\.css$/,
-                loaders: [
-                    'style-loader?sourceMap',
-                    'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]'
-                ]
+                loader: ExtractTextPlugin.extract('css-loader')
             }
         ],  
     },
@@ -32,6 +29,7 @@ const config = {
         new Dotenv({
             path: './.env', // Path to .env file (this is the default) 
         }),
+        new ExtractTextPlugin('style.css')
     ],
     watch: true,
     watchOptions: {

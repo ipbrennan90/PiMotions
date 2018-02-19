@@ -1,11 +1,10 @@
 import React, {Component} from "react"
 import ReactCamera from "simple-react-camera"
-import CSSModules from "react-css-modules"
 import axios from "axios"
-import styles from "./App.css"
+import "./App.css"
 import {getDevices} from "./util"
 
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
@@ -48,11 +47,10 @@ class App extends Component {
 
   render() {
     const {takeOnPi} = this.state
-    console.log(styles)
 
     return (
-      <div styleName="container">
-        <div styleName="pi_conditional">
+      <div className="container">
+        <div className="pi_conditional">
           <p>Use camera on pi?</p>
           <button
             onClick={() => {
@@ -69,7 +67,7 @@ class App extends Component {
             NO
           </button>
         </div>
-        <div styleName="image_container">
+        <div className="image_container">
           {!takeOnPi && (
             <ReactCamera
               className={"yourCssClassHere"}
@@ -78,14 +76,12 @@ class App extends Component {
               height={500}
             />
           )}
-          <img styleName="image" src={this.state.image} />
+          <img className="image" src={this.state.image} />
         </div>
-        <button styleName="button" onClick={this.handleClick}>
+        <button className="button" onClick={this.handleClick}>
           TAKE PICTURE
         </button>
       </div>
     )
   }
 }
-
-export default CSSModules(App, styles)

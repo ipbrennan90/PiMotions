@@ -1,0 +1,29 @@
+.image {
+    height: 200px;
+    width: 200px;
+}
+
+.image_container {
+    display: flex;
+    flex-direction: row;
+    flex-basis: auto;
+    justify-content: space-around;
+}
+
+.button {
+    height: 20px;
+    width: 200px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pi_conditional {
+    width: 200px;
+    height: 100px;
+}
+
