@@ -1,37 +1,11 @@
 import React, {Component} from "react"
 import ReactCamera from "simple-react-camera"
+import CSSModules from "react-css-modules"
 import axios from "axios"
+import styles from "./App.css"
+import {getDevices} from "./util"
 
-const imgStyle = {
-  height: "200px",
-  width: "200px",
-}
-
-const buttonStyle = {
-  height: "20px",
-  width: "200px",
-}
-
-const containerStyle = {
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-}
-
-const piConditionalStyle = {
-  width: "200px",
-  height: "100px",
-}
-
-const imageStyle = {
-  display: "flex",
-  flexDirection: "row",
-  flexBasis: "auto",
-  justifyContent: "space-around",
-}
-
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
@@ -48,12 +22,9 @@ export default class App extends Component {
     if (cam === "pi") {
       this.setState({takeOnPi: true})
     } else {
-      window.navigator.mediaDevices
-        .getUserMedia({video: true})
-        .then(() => {
-          this.setState({webCam: true, takeOnPi: false})
-        })
-        .catch(e => console.error(e))
+      getDevices(navigator, () => {
+        this.setState({webCam: true, takeOnPi: false})
+      })
     }
   }
 
@@ -77,9 +48,11 @@ export default class App extends Component {
 
   render() {
     const {takeOnPi} = this.state
+    console.log(styles)
+
     return (
-      <div style={containerStyle}>
-        <div style={piConditionalStyle}>
+      <div styleName="container">
+        <div styleName="pi_conditional">
           <p>Use camera on pi?</p>
           <button
             onClick={() => {
@@ -96,21 +69,23 @@ export default class App extends Component {
             NO
           </button>
         </div>
-        <div style={imageStyle}>
+        <div styleName="image_container">
           {!takeOnPi && (
             <ReactCamera
-              classNames={"yourCssClassHere"}
+              className={"yourCssClassHere"}
               ref={camera => (this.camera = camera)}
               width={800}
               height={500}
             />
           )}
-          <img style={imgStyle} src={this.state.image} />
+          <img styleName="image" src={this.state.image} />
         </div>
-        <button style={buttonStyle} onClick={this.handleClick}>
+        <button styleName="button" onClick={this.handleClick}>
           TAKE PICTURE
         </button>
       </div>
     )
   }
 }
+
+export default CSSModules(App, styles)
