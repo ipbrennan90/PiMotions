@@ -1,4 +1,44 @@
-.pi_conditional {
-    width: 200px;
-    height: 100px;
+.pi-conditional {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 200px;
+}
+
+.center {
+  text-align: center;
+}
+
+input[type='radio'] {
+  visibility: hidden;
+  height: 0;
+  width: 0;
+}
+
+label {
+  color: #454545;
+  cursor: pointer;
+  border: 2px solid #454545;
+  border-radius: 3px;
+  background-color: #fafafa;
+  flex: 1;
+  letter-spacing: 1px;
+  padding: 1em 0;
+  text-align: center;
+  user-select: none;
+  transition: all 0.3s ease-out;
+  vertical-align: middle;
+}
+
+input[type='radio']:checked + label {
+  border: 2px solid #1f439a;
+  background-color: #1f439a;
+  color: #fafafa;
+}
+
+.trigger-container {
+  display: block;
+  padding: 50px;
+  position: relative;
 }

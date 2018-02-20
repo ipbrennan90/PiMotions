@@ -2,28 +2,34 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './style.css'
 
-const PiConditional = ({chooseCam}) => (
-  <div className="pi_conditional">
-    <p>Use camera on pi?</p>
-    <button
-      onClick={() => {
-        chooseCam('pi')
-      }}
-    >
-      YES
-    </button>
-    <button
-      onClick={() => {
-        chooseCam('web')
-      }}
-    >
-      NO
-    </button>
+const PiConditional = ({ chooseCam, selected }) => (
+  <div>
+    <h3 className="center">Image Source</h3>
+    <div className="pi-conditional">
+      <input
+        type="radio"
+        name="camera"
+        id="option-1"
+        value="pi"
+        defaultChecked
+        onChange={chooseCam}
+      />
+      <label htmlFor="option-1">R Pi</label>
+
+      <input
+        type="radio"
+        name="camera"
+        id="option-2"
+        value="web"
+        onChange={chooseCam}
+      />
+      <label htmlFor="option-2">Webcam</label>
+    </div>
   </div>
 )
 
 PiConditional.propTypes = {
-  chooseCam: PropTypes.func,
+  chooseCam: PropTypes.func
 }
 
 export default PiConditional
