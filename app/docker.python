@@ -1,9 +1,10 @@
 FROM python:3
 
 # Copy Flask Server Requirements File
-COPY . /app
+COPY ./server/requirements.txt /app/server/requirements.txt
 WORKDIR /app/server
 RUN pip install -r ./requirements.txt
+COPY ./server/server.py /app/server/server.py
 
 # Command to run upon successful docker install
 CMD ["python", "server.py"]

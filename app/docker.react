@@ -1,12 +1,14 @@
 FROM node:latest
 
 WORKDIR /app
-COPY . /app
-# update
-COPY . /app
-
+COPY ./static/package.json /app/static/package.json
 WORKDIR /app/static
-
 RUN npm install
+COPY ./static/.env /app/static/.env
+COPY ./static/js /app/static/js
+COPY ./static/webpack.config.js /app/static/webpack.config.js
+COPY ./static/.babelrc /app/static/.babelrc
+COPY ./static/assets /app/static/assets
+COPY ./static/index.html /app/static/index.html
 
 CMD ["npm", "run",  "watch"]

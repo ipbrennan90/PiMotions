@@ -1,11 +1,12 @@
 {
   "name": "take-my-picture",
   "version": "1.0.0",
-  "description":
-    "simple web app to take and display raspberry pi camera pictures",
+  "description": "simple web app to take and display raspberry pi camera pictures",
   "main": "index.jsx",
   "scripts": {
     "start": "docker-compose up",
+    "docker-down": "docker-compose down --volumes",
+    "docker-newdep-js": "npm run docker-down && npm run docker-build",
     "docker-build": "docker-compose up --build",
     "docker-build-nc": "docker-compose build --no-cache",
     "test": "echo \"Error: no test specified\" && exit 1",

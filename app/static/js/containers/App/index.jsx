@@ -19,7 +19,7 @@ export default class App extends Component {
     this.state = {
       image: sxsw,
       webCam: false,
-      takeOnPi: true
+      takeOnPi: true,
     }
   }
 
@@ -53,21 +53,16 @@ export default class App extends Component {
         <header className="header">
           <h1>Take My Picture</h1>
         </header>
-
         <PiConditional chooseCam={this.chooseCam} selected={takeOnPi} />
-
         <Camera
           innerRef={camera => (this.camera = camera)}
           takeOnPi={takeOnPi}
           image={image}
         />
-
         <button className="button trigger" onClick={this.handleClick}>
           Take Picture
         </button>
-
         <hr />
-
         <footer className="footer">
           <a href="https://raspberrypi.org/" target="_blank">
             <img src={rpi} />
