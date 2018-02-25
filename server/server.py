@@ -11,7 +11,6 @@ import picamera
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
-import numpy as np
 
 RUN_CAM = False
 
@@ -79,10 +78,12 @@ def check_motion(message):
     response = None
     @copy_current_request_context
     def run_motion_cam(emit_func):
-        img_1, img_1_path = None
+        img_1_str = None
+        img_1_path = None
         while RUN_CAM:
-            img_2_str, img_2_path = None
-            if not img_1 or img_1_path:
+            img_2_str = None
+            img_2_path = None
+            if not img_1_str or not img_1_path:
                 img_1_str, img_1_path = snap()
                 emit_func( "detector running", {'pic': img_1_str})
                 time.sleep(1)
