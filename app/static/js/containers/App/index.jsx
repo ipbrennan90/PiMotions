@@ -87,7 +87,7 @@ export default class App extends Component {
 
   renderPicStream(pics) {
     return pics.map(pic => {
-      return <img style={imgStyle} src={pic} />
+      return <img src={pic} />
     })
   }
 
