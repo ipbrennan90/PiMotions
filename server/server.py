@@ -2,7 +2,7 @@ from flask import Flask, Response, send_file, json, request, copy_current_reques
 from io import BytesIO
 import base64
 import time
-from PIL import Image
+from PIL import Image, ImageChops
 import tempfile
 import logging
 from datetime import datetime
@@ -11,6 +11,7 @@ import picamera
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
+import scipy as sc
 
 RUN_CAM = False
 
@@ -20,15 +21,31 @@ CORS(app)
 socketio = SocketIO(app)
 
 
+def analyze_images(img_path_1, img_path_2):
+    img1 = Image.open(img_path_1)
+    img2 = Image.open(img_path_2)
+    path = get_temp_path('diff')
+    img_diff = ImageChops.difference(img1, img2)
+    img_diff.save(path)
+    img_hist = img_diff.histogram()
+    img_hist_length = sum(histogram)
+    img_hist_samples_probability = [float(h) / histogram_length for h in histogram]
+    entropy = sc.stats.entropy(img_hist_samples_probability);
+
+def get_temp_path(name):
+    tempdir = tempfile.mkdtemp()
+    date = datetime.now()
+    filename = '{}-{}.jpg'.format(name, date)
+    path = os.path.join(tempdir, filename)
+    return path
+        
+
 def snap():
     img_str = ''
     camera = picamera.PiCamera()
     
     try:
-        tempdir = tempfile.mkdtemp()
-        date = datetime.now()
-        filename = 'capture-{}.jpg'.format(date)
-        path = os.path.join(tempdir, filename)
+        path = get_temp_path('capture')
         camera.capture(path)
         with open(path, "rb") as imageFile:
             img_str = base64.b64encode(imageFile.read())
@@ -36,7 +53,8 @@ def snap():
         logging.exception("could not capture image")
     finally:
         camera.close()
-    return  'data:image/jpeg;base64,' + img_str
+    current_img_str = 'data:image/jpeg;base64,' + img_str
+    return  (current_img_str, path)
 
 @app.route('/take')
 def take_picture():
@@ -57,9 +75,20 @@ def check_motion(message):
     response = None
     @copy_current_request_context
     def run_motion_cam(emit_func):
+        img_1, img_1_path = None
         while RUN_CAM:
-            img_str = snap()
-            emit_func("detector running", {'pic': img_str})
+            img_2_str, img_2_path = None
+            if not img_1 or img_1_path:
+                img_1_str, img_1_path = snap()
+                emit_func( "detector running", {'pic': img_1_str})
+                time.sleep(1)
+                img_2_str, img_2_path = snap()
+                emit_func( "detector running", {'pic': img_2_str})
+            else:
+                img_2_str, img_2_path = snap()
+                emit_func( "detector running", {'pic': img_2_str})
+                img_1_str = img_2_str
+                img_1_path = img_2_path
             time.sleep(5)
         
     def run_detector(run_cam, emit_func):
