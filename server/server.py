@@ -11,6 +11,7 @@ import picamera
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
+import math
 
 RUN_CAM = False
 
@@ -24,7 +25,11 @@ def image_entropy(img):
     histogram = img.histogram()
     histogram_length = sum(histogram)
     samples_probability = [float(h) / histogram_length for h in histogram]
-    return -sum([p * math.log(p, 2) for p in samples_probability if p != 0])
+    entropy = -sum([p * math.log(p, 2) for p in samples_probability if p != 0])
+    r = histogram[:256]
+    g = histogram[256:512]
+    b = histogram[512:]
+    return {'r': r, 'g': g, 'b': b}, entropy
 
 def analyze_images(img_path_1, img_path_2):
     img1 = Image.open(img_path_1)
@@ -32,8 +37,7 @@ def analyze_images(img_path_1, img_path_2):
     path = get_temp_path('diff')
     img_diff = ImageChops.difference(img1, img2)
     img_diff.save(path)
-    entropy = image_entropy(img_diff)
-    logging.debug(entropy)
+    return image_entropy(img_diff)
 
 def get_temp_path(name):
     tempdir = tempfile.mkdtemp()
@@ -61,10 +65,10 @@ def snap():
 
 @app.route('/take')
 def take_picture():
-    img_str = snap()
+    img_str, _ = snap()
     response = Response(
         response = json.dumps({
-            'src': 'data:image/jpeg;base64,' + img_str
+            'src': img_str
         }),
         status = 200,
         mimetype='application/json'
@@ -88,10 +92,12 @@ def check_motion(message):
                 emit_func( "detector running", {'pic': img_1_str})
                 time.sleep(1)
                 img_2_str, img_2_path = snap()
-                emit_func( "detector running", {'pic': img_2_str})
+                histogram, entropy = analyze_images(img_1_path, img_2_path)
+                emit_func( "detector running", {'pic': img_2_str, 'entropy': entropy, 'histogram': histogram})
             else:
                 img_2_str, img_2_path = snap()
-                emit_func( "detector running", {'pic': img_2_str})
+                histogram, entropy = analyze_images(img_1_path, img_2_path)
+                emit_func( "detector running", {'pic': img_2_str, 'entropy': entropy, 'histogram': histogram})
                 img_1_str = img_2_str
                 img_1_path = img_2_path
             time.sleep(5)
