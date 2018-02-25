@@ -22,12 +22,10 @@ socketio = SocketIO(app)
 
 
 def image_entropy(img):
-    w,h = img.size
-    a = np.array(img.convert('RGB')).reshape((w*h,3))
-    h,e = np.histogramdd(a, bins=(16,)*3, range=((0,256),)*3)
-    prob = h/np.sum(h) # normalize
-    prob = prob[prob>0] # remove zeros
-    return -np.sum(prob*np.log2(prob))
+    histogram = img.histogram()
+    histogram_length = sum(histogram)
+    samples_probability = [float(h) / histogram_length for h in histogram]
+    return -sum([p * math.log(p, 2) for p in samples_probability if p != 0])
 
 def analyze_images(img_path_1, img_path_2):
     img1 = Image.open(img_path_1)
