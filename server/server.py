@@ -11,7 +11,7 @@ import picamera
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
-import scipy as sc
+import numpy as np
 
 RUN_CAM = False
 
@@ -21,16 +21,22 @@ CORS(app)
 socketio = SocketIO(app)
 
 
+def image_entropy(img):
+    w,h = img.size
+    a = np.array(img.convert('RGB')).reshape((w*h,3))
+    h,e = np.histogramdd(a, bins=(16,)*3, range=((0,256),)*3)
+    prob = h/np.sum(h) # normalize
+    prob = prob[prob>0] # remove zeros
+    return -np.sum(prob*np.log2(prob))
+
 def analyze_images(img_path_1, img_path_2):
     img1 = Image.open(img_path_1)
     img2 = Image.open(img_path_2)
     path = get_temp_path('diff')
     img_diff = ImageChops.difference(img1, img2)
     img_diff.save(path)
-    img_hist = img_diff.histogram()
-    img_hist_length = sum(histogram)
-    img_hist_samples_probability = [float(h) / histogram_length for h in histogram]
-    entropy = sc.stats.entropy(img_hist_samples_probability);
+    entropy = image_entropy(img_diff)
+    logging.debug(entropy)
 
 def get_temp_path(name):
     tempdir = tempfile.mkdtemp()
