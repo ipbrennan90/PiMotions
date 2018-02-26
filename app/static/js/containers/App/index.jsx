@@ -92,7 +92,6 @@ export default class App extends Component {
   renderPicStream(pics) {
     return pics.map(pic => {
       if (!pic.entropy) return
-      debugger
       return (
         <span>
           <img src={pic.img_diff} />
