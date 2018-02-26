@@ -28,7 +28,7 @@ def histogram_entropy(histogram):
     entropy = -sum([p * math.log(p, 2) * p for p in samples_probability if p != 0])
     return entropy
 
-def image_entropy(img, emit_func):
+def image_entropy(img):
     global ENTROPY_SAMPLE
     histogram = img.histogram()
     r = histogram[:256]
@@ -45,8 +45,6 @@ def image_entropy(img, emit_func):
         'b_entropy': b_entropy,
     }
     ENTROPY_SAMPLE.append(entropy_obj['total_entropy'])
-    std_dev_thread = threading.Thread(target=standard_deviation, args=[ENTROPY_SAMPLE, emit_func])
-    std_dev_thread.start()
     return (
         {
             'r': r,
@@ -56,14 +54,14 @@ def image_entropy(img, emit_func):
         entropy_obj
     )
 
-def analyze_images(img_path_1, img_path_2, emit_func):
+def analyze_images(img_path_1, img_path_2):
     img1 = Image.open(img_path_1)
     img2 = Image.open(img_path_2)
     path = get_temp_path('diff')
     img_diff = ImageChops.difference(img1, img2)
     img_diff.save(path)
     img_str = open_image(path)
-    histogram, entropy = image_entropy(img_diff, emit_func)
+    histogram, entropy = image_entropy(img_diff)
     return histogram, entropy, img_str
 
 def get_temp_path(name):
@@ -124,11 +122,17 @@ def check_motion(message):
                 time.sleep(0.5)
                 img_2_str, img_2_path = snap()
                 histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
+                std_dev_thread = threading.Thread(target=emit_std_dev, args=[emit])
+                std_dev_thread.start()
+
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
             else:
                 img_2_str, img_2_path = snap()
                 histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
+                std_dev_thread = threading.Thread(target=emit_std_dev, args=[emit])
+                std_dev_thread.start()
+
                 img_1_str = img_2_str
                 img_1_path = img_2_path
             time.sleep(0.5)
