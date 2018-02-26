@@ -49,14 +49,14 @@ def analyze_images(img_path_1, img_path_2):
 def get_temp_path(name):
     tempdir = tempfile.mkdtemp()
     date = datetime.now()
-    filename = '{}-{}.jpg'.format(name, date)
+    filename = '{}-{}.png'.format(name, date)
     path = os.path.join(tempdir, filename)
     return path
 
 def open_image(path):
     img_str = ''
     with open(path, "rb") as imageFile:
-        img_str = 'data:image/jpeg;base64,' + base64.b64encode(imageFile.read())
+        img_str = 'data:image/png;base64,' + base64.b64encode(imageFile.read())
     return img_str
         
 
