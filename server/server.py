@@ -14,49 +14,66 @@ import threading
 import math
 
 RUN_CAM = False
+ENTROPY_SAMPLE = []
 
 
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app)
 
+def variance(values, mean, n):
+    return sum([(v - mean)**2])/(n-1)
+
+def standard_deviation(values, emit_func):
+    total = sum(values)
+    n  = values.length
+    mean = total / n
+    sample_variance = variance(values, mean, n)
+    std_dev = math.sqrt(sample_variance)
+    emit_func('standard-dev', {'mean': mean, 'variance': sample_variance, 'dev': std_dev})
+    
 def histogram_entropy(histogram):
     histogram_length = sum(histogram[:256])
     samples_probability = [float(h) / histogram_length for h in histogram]
     entropy = -sum([p * math.log(p, 2) * p for p in samples_probability if p != 0])
-    return histogram_length, entropy
+    return entropy
 
-def image_entropy(img):
+def image_entropy(img, emit_func):
+    global ENTROPY_SAMPLE
     histogram = img.histogram()
     r = histogram[:256]
     g = histogram[256:512]
     b = histogram[512:]
-    all_band_length, all_band_entropy = histogram_entropy(histogram)
-    r_length, r_entropy = histogram_entropy(r)
-    g_length, g_entropy = histogram_entropy(g)
-    b_length, b_entropy = histogram_entropy(b)
+    all_band_entropy = histogram_entropy(histogram)
+    r_entropy = histogram_entropy(r)
+    g_entropy = histogram_entropy(g)
+    b_entropy = histogram_entropy(b)
+    entropy_obj = {
+        'total_entropy': all_band_entropy,
+        'r_entropy': r_entropy,
+        'g_entropy': g_entropy,
+        'b_entropy': b_entropy,
+    }
+    ENTROPY_SAMPLE.append(entropy_obj)
+    std_dev_thread = threading.Thread(target=standard_deviation, args=[ENTROPY_SAMPLE, emit_func])
+    std_dev_thread.start()
     return (
         {
             'r': r,
             'g': g,
             'b': b
         },
-        {
-            'total_entropy': {'length': all_band_length, 'entropy': all_band_entropy},
-            'r_entropy': {'length': r_length, 'entropy': r_entropy},
-            'g_entropy': {'length': g_length, 'entropy': g_entropy},
-            'b_entropy': {'length': b_length, 'entropy': b_entropy},
-        }
+        entropy_obj
     )
 
-def analyze_images(img_path_1, img_path_2):
+def analyze_images(img_path_1, img_path_2, emit_func):
     img1 = Image.open(img_path_1)
     img2 = Image.open(img_path_2)
     path = get_temp_path('diff')
     img_diff = ImageChops.difference(img1, img2)
     img_diff.save(path)
     img_str = open_image(path)
-    histogram, entropy = image_entropy(img_diff)
+    histogram, entropy = image_entropy(img_diff, emit_func)
     return histogram, entropy, img_str
 
 def get_temp_path(name):
@@ -116,13 +133,11 @@ def check_motion(message):
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': '', 'entropy': '', 'histogram': {}})
                 time.sleep(0.5)
                 img_2_str, img_2_path = snap()
-                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
-                base_histogram, base_entropy, _ = analyze_images(img_2_path, img_2_path)
+                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path, emit_func)
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
             else:
                 img_2_str, img_2_path = snap()
-                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
-                base_histogram, base_entropy, _ = analyze_images(img_2_path, img_2_path)
+                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path, emit_func)
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
                 img_1_str = img_2_str
                 img_1_path = img_2_path

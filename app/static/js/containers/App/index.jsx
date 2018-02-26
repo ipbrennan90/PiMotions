@@ -43,6 +43,7 @@ export default class App extends Component {
 
       this.setState({ pics })
     })
+    socket.on('standard-dev', data => console.log(data))
     socket.on('disconnect', () => socket.emit('disconnect', 'disconnected'))
   }
 
