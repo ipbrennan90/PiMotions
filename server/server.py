@@ -21,7 +21,7 @@ CORS(app)
 socketio = SocketIO(app)
 
 def histogram_entropy(histogram):
-    histogram_length = sum(histogram)
+    histogram_length = sum(histogram[:256])
     samples_probability = [float(h) / histogram_length for h in histogram]
     entropy = -sum([p * math.log(p, 2) * p for p in samples_probability if p != 0])
     return histogram_length, entropy

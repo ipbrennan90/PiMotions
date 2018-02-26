@@ -39,7 +39,6 @@ export default class App extends Component {
         img: data.pic,
         img_diff: data.diff_img,
         entropy: data.entropy,
-        base_entropy: data.base_entropy,
       })
 
       this.setState({ pics })
@@ -92,16 +91,24 @@ export default class App extends Component {
 
   renderPicStream(pics) {
     return pics.map(pic => {
+      if (!pic.entropy) return
+      debugger
       return (
         <span>
           <img src={pic.img_diff} />
-          <p>TOTAL ENTROPY: {pic.entropy.total_entropy}</p>
-          <p>R ENTROPY: {pic.entropy.r_entropy}</p>
-          <p>G ENTROPY: {pic.entropy.g_entropy}</p>
-          <p>B ENTROPY: {pic.entropy.b_entropy}</p>
-          <p>R BASE ENTROPY: {pic.base_entropy.r_entropy}</p>
-          <p>G BASE ENTROPY: {pic.base_entropy.g_entropy}</p>
-          <p>B BASE ENTROPY: {pic.base_entropy.b_entropy}</p>
+          <p>TOTAL ENTROPY: {pic.entropy.total_entropy.entropy}</p>
+          <p>
+            R ENTROPY: {pic.entropy.r_entropy.entropy} LENGTH:{' '}
+            {pic.entropy.r_entropy.length}
+          </p>
+          <p>
+            G ENTROPY: {pic.entropy.g_entropy.entropy} LENGTH:{' '}
+            {pic.entropy.g_entropy.length}
+          </p>
+          <p>
+            B ENTROPY: {pic.entropy.b_entropy.entropy} LENGTH:{' '}
+            {pic.entropy.b_entropy.length}
+          </p>
         </span>
       )
     })
