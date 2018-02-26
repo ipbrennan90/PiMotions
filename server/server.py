@@ -20,24 +20,31 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app)
 
+def histogram_entropy(histogram):
+    histogram_length = sum(histogram)
+    samples_probability = [float(h) / histogram_length for h in histogram]
+    return -sum([p * math.log(p, 2) * p for p in samples_probability if p != 0])
 
 def image_entropy(img):
     histogram = img.histogram()
-    histogram_length = sum(histogram)
-    samples_probability = [float(h) / histogram_length for h in histogram]
-    entropy = -sum([p * math.log(p, 2) for p in samples_probability if p != 0])
     r = histogram[:256]
     g = histogram[256:512]
     b = histogram[512:]
-    return {'r': r, 'g': g, 'b': b}, entropy
+    all_band_entropy = histogram_entropy(histogram)
+    r_entropy = histogram_entropy(r)
+    g_entropy = histogram_entropy(g)
+    b_entropy = histogram_entropy(b)
+    return {'r': r, 'g': g, 'b': b}, {'total_entropy': all_band_entropy, 'r_entropy': r_entropy, 'g_entropy': g_entropy, 'b_entropy': b_entropy }
 
 def analyze_images(img_path_1, img_path_2):
-    img1 = Image.open(img_path_1)
-    img2 = Image.open(img_path_2)
+    img1 = Image.open(img_path_1).convert('LA')
+    img2 = Image.open(img_path_2).convert('LA')
     path = get_temp_path('diff')
     img_diff = ImageChops.difference(img1, img2)
     img_diff.save(path)
-    return image_entropy(img_diff)
+    img_str = open_image(path)
+    histogram, entropy = image_entropy(img_diff)
+    return histogram, entropy, img_str
 
 def get_temp_path(name):
     tempdir = tempfile.mkdtemp()
@@ -45,6 +52,12 @@ def get_temp_path(name):
     filename = '{}-{}.jpg'.format(name, date)
     path = os.path.join(tempdir, filename)
     return path
+
+def open_image(path):
+    img_str = ''
+    with open(path, "rb") as imageFile:
+        img_str = 'data:image/jpeg;base64,' + base64.b64encode(imageFile.read())
+    return img_str
         
 
 def snap():
@@ -54,14 +67,12 @@ def snap():
     try:
         path = get_temp_path('capture')
         camera.capture(path)
-        with open(path, "rb") as imageFile:
-            img_str = base64.b64encode(imageFile.read())
+        img_str = open_image(path)
     except (ValueError, RuntimeError, TypeError, NameError):
         logging.exception("could not capture image")
     finally:
         camera.close()
-    current_img_str = 'data:image/jpeg;base64,' + img_str
-    return  (current_img_str, path)
+    return  (img_str, path)
 
 @app.route('/take')
 def take_picture():
@@ -89,18 +100,18 @@ def check_motion(message):
             img_2_path = None
             if not img_1_str or not img_1_path:
                 img_1_str, img_1_path = snap()
-                emit_func( "detector running", {'pic': img_1_str})
-                time.sleep(1)
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': '', 'entropy': '', 'histogram': {}})
+                time.sleep(0.5)
                 img_2_str, img_2_path = snap()
-                histogram, entropy = analyze_images(img_1_path, img_2_path)
-                emit_func( "detector running", {'pic': img_2_str, 'entropy': entropy, 'histogram': histogram})
+                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
             else:
                 img_2_str, img_2_path = snap()
-                histogram, entropy = analyze_images(img_1_path, img_2_path)
-                emit_func( "detector running", {'pic': img_2_str, 'entropy': entropy, 'histogram': histogram})
+                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
                 img_1_str = img_2_str
                 img_1_path = img_2_path
-            time.sleep(5)
+            time.sleep(0.5)
         
     def run_detector(run_cam, emit_func):
         logging.debug(run_cam)
@@ -131,4 +142,4 @@ def stop_detector():
         
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, host='0.0.0.0', port=80)
+    socketio.run(app, debug=False, host='0.0.0.0', port=80)

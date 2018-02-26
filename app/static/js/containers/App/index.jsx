@@ -35,7 +35,11 @@ export default class App extends Component {
     socket.on('detector running', data => {
       console.log(data)
       let { pics } = this.state
-      pics.push(data.pic)
+      pics.push({
+        img: data.pic,
+        img_diff: data.diff_img,
+        entropy: data.entropy,
+      })
 
       this.setState({ pics })
     })
@@ -71,7 +75,7 @@ export default class App extends Component {
   turnOnMotion() {
     if (this.state.motionDetector === 'on') {
       socket.emit('motion', 'off')
-      this.setState({ pics: [], motionDetector: 'off' })
+      this.setState({ motionDetector: 'off' })
     } else {
       socket.emit('motion', 'on')
       this.setState({ motionDetector: 'on' })
@@ -87,7 +91,15 @@ export default class App extends Component {
 
   renderPicStream(pics) {
     return pics.map(pic => {
-      return <img src={pic} />
+      return (
+        <span>
+          <img src={pic.img_diff} />
+          <p>TOTAL ENTROPY: {pic.entropy.total_entropy}</p>
+          <p>R ENTROPY: {pic.entropy.r_entropy}</p>
+          <p>G ENTROPY: {pic.entropy.g_entropy}</p>
+          <p>B ENTROPY: {pic.entropy.b_entropy}</p>
+        </span>
+      )
     })
   }
 
