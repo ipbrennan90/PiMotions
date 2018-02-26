@@ -23,18 +23,31 @@ socketio = SocketIO(app)
 def histogram_entropy(histogram):
     histogram_length = sum(histogram)
     samples_probability = [float(h) / histogram_length for h in histogram]
-    return -sum([p * math.log(p, 2) * p for p in samples_probability if p != 0])
+    entropy = -sum([p * math.log(p, 2) * p for p in samples_probability if p != 0])
+    return histogram_length, entropy
 
 def image_entropy(img):
     histogram = img.histogram()
     r = histogram[:256]
     g = histogram[256:512]
     b = histogram[512:]
-    all_band_entropy = histogram_entropy(histogram)
-    r_entropy = histogram_entropy(r)
-    g_entropy = histogram_entropy(g)
-    b_entropy = histogram_entropy(b)
-    return {'r': r, 'g': g, 'b': b}, {'total_entropy': all_band_entropy, 'r_entropy': r_entropy, 'g_entropy': g_entropy, 'b_entropy': b_entropy }
+    all_band_length, all_band_entropy = histogram_entropy(histogram)
+    r_length, r_entropy = histogram_entropy(r)
+    g_length, g_entropy = histogram_entropy(g)
+    b_length, b_entropy = histogram_entropy(b)
+    return (
+        {
+            'r': r,
+            'g': g,
+            'b': b
+        },
+        {
+            'total_entropy': {'length': all_band_length, 'entropy': all_band_entropy},
+            'r_entropy': {'length': r_length, 'entropy': r_entropy},
+            'g_entropy': {'length': g_length, 'entropy': g_entropy},
+            'b_entropy': {'length': b_length, 'entropy': b_entropy},
+        }
+    )
 
 def analyze_images(img_path_1, img_path_2):
     img1 = Image.open(img_path_1)
@@ -100,17 +113,17 @@ def check_motion(message):
             img_2_path = None
             if not img_1_str or not img_1_path:
                 img_1_str, img_1_path = snap()
-                emit_func( "detector running", {'pic': img_2_str, 'diff_img': '', 'base_entropy': '', 'entropy': '', 'histogram': {}})
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': '', 'entropy': '', 'histogram': {}})
                 time.sleep(0.5)
                 img_2_str, img_2_path = snap()
                 histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
                 base_histogram, base_entropy, _ = analyze_images(img_2_path, img_2_path)
-                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'base_entropy':  base_entropy, 'entropy': entropy, 'histogram': histogram})
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
             else:
                 img_2_str, img_2_path = snap()
                 histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
                 base_histogram, base_entropy, _ = analyze_images(img_2_path, img_2_path)
-                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'base_entropy':  base_entropy, 'entropy': entropy, 'histogram': histogram})
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
                 img_1_str = img_2_str
                 img_1_path = img_2_path
             time.sleep(0.5)
