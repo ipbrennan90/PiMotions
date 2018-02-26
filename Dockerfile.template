@@ -12,5 +12,6 @@ WORKDIR /server
 ENV READTHEDOCS True
 RUN pip install -r ./requirements.txt
 COPY ./server/server.py /server/server.py
+COPY ./server/stats.py /server/stats.py
 CMD ["python", "server.py"]
 
