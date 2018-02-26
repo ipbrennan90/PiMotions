@@ -39,6 +39,7 @@ export default class App extends Component {
         img: data.pic,
         img_diff: data.diff_img,
         entropy: data.entropy,
+        base_entropy: data.base_entropy,
       })
 
       this.setState({ pics })
@@ -98,6 +99,9 @@ export default class App extends Component {
           <p>R ENTROPY: {pic.entropy.r_entropy}</p>
           <p>G ENTROPY: {pic.entropy.g_entropy}</p>
           <p>B ENTROPY: {pic.entropy.b_entropy}</p>
+          <p>R BASE ENTROPY: {pic.base_entropy.r_entropy}</p>
+          <p>G BASE ENTROPY: {pic.base_entropy.g_entropy}</p>
+          <p>B BASE ENTROPY: {pic.base_entropy.b_entropy}</p>
         </span>
       )
     })

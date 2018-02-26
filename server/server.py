@@ -37,8 +37,8 @@ def image_entropy(img):
     return {'r': r, 'g': g, 'b': b}, {'total_entropy': all_band_entropy, 'r_entropy': r_entropy, 'g_entropy': g_entropy, 'b_entropy': b_entropy }
 
 def analyze_images(img_path_1, img_path_2):
-    img1 = Image.open(img_path_1).convert('LA')
-    img2 = Image.open(img_path_2).convert('LA')
+    img1 = Image.open(img_path_1)
+    img2 = Image.open(img_path_2)
     path = get_temp_path('diff')
     img_diff = ImageChops.difference(img1, img2)
     img_diff.save(path)
@@ -49,14 +49,14 @@ def analyze_images(img_path_1, img_path_2):
 def get_temp_path(name):
     tempdir = tempfile.mkdtemp()
     date = datetime.now()
-    filename = '{}-{}.png'.format(name, date)
+    filename = '{}-{}.jpg'.format(name, date)
     path = os.path.join(tempdir, filename)
     return path
 
 def open_image(path):
     img_str = ''
     with open(path, "rb") as imageFile:
-        img_str = 'data:image/png;base64,' + base64.b64encode(imageFile.read())
+        img_str = 'data:image/jpeg;base64,' + base64.b64encode(imageFile.read())
     return img_str
         
 
@@ -104,11 +104,13 @@ def check_motion(message):
                 time.sleep(0.5)
                 img_2_str, img_2_path = snap()
                 histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
-                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
+                base_histogram, base_entropy, _ = analyze_images(img_2_path, img_2_path)
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'base_entropy':  base_entropy, 'entropy': entropy, 'histogram': histogram})
             else:
                 img_2_str, img_2_path = snap()
                 histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
-                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
+                base_histogram, base_entropy, _ = analyze_images(img_2_path, img_2_path)
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'base_entropy':  base_entropy, 'entropy': entropy, 'histogram': histogram})
                 img_1_str = img_2_str
                 img_1_path = img_2_path
             time.sleep(0.5)
@@ -142,4 +144,4 @@ def stop_detector():
         
 
 if __name__ == "__main__":
-    socketio.run(app, debug=False, host='0.0.0.0', port=80)
+    socketio.run(app, debug=True, host='0.0.0.0', port=80)
