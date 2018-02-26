@@ -100,7 +100,7 @@ def check_motion(message):
             img_2_path = None
             if not img_1_str or not img_1_path:
                 img_1_str, img_1_path = snap()
-                emit_func( "detector running", {'pic': img_2_str, 'diff_img': '', 'entropy': '', 'histogram': {}})
+                emit_func( "detector running", {'pic': img_2_str, 'diff_img': '', 'base_entropy': '', 'entropy': '', 'histogram': {}})
                 time.sleep(0.5)
                 img_2_str, img_2_path = snap()
                 histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
