@@ -12,6 +12,7 @@ from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
 import math
+from stats import standard_deviation
 
 RUN_CAM = False
 ENTROPY_SAMPLE = []
@@ -21,17 +22,6 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app)
 
-def variance(values, mean, n):
-    return sum([(v - mean)**2])/(n-1)
-
-def standard_deviation(values, emit_func):
-    total = sum(values)
-    n  = values.length
-    mean = total / n
-    sample_variance = variance(values, mean, n)
-    std_dev = math.sqrt(sample_variance)
-    emit_func('standard-dev', {'mean': mean, 'variance': sample_variance, 'dev': std_dev})
-    
 def histogram_entropy(histogram):
     histogram_length = sum(histogram[:256])
     samples_probability = [float(h) / histogram_length for h in histogram]
@@ -54,7 +44,7 @@ def image_entropy(img, emit_func):
         'g_entropy': g_entropy,
         'b_entropy': b_entropy,
     }
-    ENTROPY_SAMPLE.append(entropy_obj)
+    ENTROPY_SAMPLE.append(entropy_obj['total_entropy'])
     std_dev_thread = threading.Thread(target=standard_deviation, args=[ENTROPY_SAMPLE, emit_func])
     std_dev_thread.start()
     return (
@@ -133,15 +123,19 @@ def check_motion(message):
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': '', 'entropy': '', 'histogram': {}})
                 time.sleep(0.5)
                 img_2_str, img_2_path = snap()
-                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path, emit_func)
+                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
             else:
                 img_2_str, img_2_path = snap()
-                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path, emit_func)
+                histogram, entropy, diff_img = analyze_images(img_1_path, img_2_path)
                 emit_func( "detector running", {'pic': img_2_str, 'diff_img': diff_img, 'entropy': entropy, 'histogram': histogram})
                 img_1_str = img_2_str
                 img_1_path = img_2_path
             time.sleep(0.5)
+    @copy_current_request_context
+    def emit_std_dev(emit_func):
+        mean, sample_variance, sample_std_dev = standard_deviation(ENTROPY_SAMPLE)
+        emit_func("standard-dev", {'mean': mean, 'sample_variance': sample_variance, 'sample_std_dev': sample_std_dev})
         
     def run_detector(run_cam, emit_func):
         logging.debug(run_cam)
