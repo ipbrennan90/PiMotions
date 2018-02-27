@@ -4,6 +4,7 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 from threading import Thread
 import math
+import numpy as np
 
 THRESHOLD = 20
 SENSITIVITY = 300
@@ -55,45 +56,24 @@ class MotionDetector:
     def stop(self):
         # set thread indicator to stop thread
         self.stopped = True
-
-def abs_array(array1, array2):
-   return [abs(v1-v2) > THRESHOLD for v1, v2 in zip(array1, array2)]
-
-def abs_matrix(matrix1, matrix2):
-    matrix_abs_matrix = [abs_array(array1, array2) for array1, array2 in zip(matrix1, matrix2)]
-    return sum([sum(l) for l in matrix_abs_matrix])
-
-def abs_rows(data1, data2):
-    return sum([abs_matrix(matrix1, matrix2) for matrix1, matrix2 in zip(data1, data2)])
-
-def color_matrix(matrix, i):
-    return [a[i] for a in matrix]
-
-def rgb_row_to_color_row(data, color_index):
-    return [color_matrix(matrix, color_index) for matrix in data]
-    
-            
-    
+             
 def checkForMotion(data1, data2):
-    # this is where we look for motion between two data streams (RGB Arrays)
     motionDetected = False
-    pixColor = 3 # this is where we select the band we are interested in (red=0, green=1, blue=2, all=3) defaults to 1
+    pixColor = 3 # red=0 green=1 blue=2 all=3  default=1
     if pixColor == 3:
-        pixChanges = abs_rows(data1, data2)/3
+        pixChanges = (np.absolute(data1-data2)>THRESHOLD).sum()/3
     else:
-        pixChanges = abs_matrix(rgb_row_to_color_row(data1, pixColor), rgb_row_to_color_row(data2,pixColor))
-
+        pixChanges = (np.absolute(data1[...,pixColor]-data2[...,pixColor])>THRESHOLD).sum()
     if pixChanges > SENSITIVITY:
-        motionDetected = True
-    return motionDetected
+        motionDetected = True        
+    return motionDetected  
 
 def main(vs, cb):
     frame_1 = vs.read()
     while True:
         frame_2 = vs.read()
         if checkForMotion(frame_1, frame_2):
-            cb()
-            
+            cb() 
         
 def boot_motion(cb, exit_func):
     try:
