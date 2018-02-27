@@ -31,7 +31,7 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 [Detailed steps here if you need them!](https://help.github.com/articles/fork-a-repo/)
 
 1. Fork the repo to your own account.
-2. Clone: `git@github.com:your-username/take-my-picture.git`
+2. Clone: `git@github.com:your-username/PiMotions.git`
 3. Navigate into the directory: `cd take-my-picture`
 
 ### 2. Get the app running locally
