@@ -13,5 +13,6 @@ ENV READTHEDOCS True
 RUN pip install -r ./requirements.txt
 COPY ./server/server.py /server/server.py
 COPY ./server/stats.py /server/stats.py
+COPY ./server/motion.py /server/motion.py
 CMD ["python", "server.py"]
 
