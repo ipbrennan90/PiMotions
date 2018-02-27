@@ -32,18 +32,10 @@ export default class App extends Component {
   turnOnSocket() {
     socket.on('connect', () => console.log('connected'))
     socket.on('motion response', data => console.log(data))
-    socket.on('detector running', data => {
+    socket.on('motion-detected', data => {
       console.log(data)
-      let { pics } = this.state
-      pics.push({
-        img: data.pic,
-        img_diff: data.diff_img,
-        entropy: data.entropy,
-      })
-
-      this.setState({ pics })
     })
-    socket.on('standard-dev', data => console.log(data))
+    socket.on('motion-detector-exit', data => console.log(data))
     socket.on('disconnect', () => socket.emit('disconnect', 'disconnected'))
   }
 
