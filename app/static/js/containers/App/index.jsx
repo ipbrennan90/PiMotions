@@ -36,7 +36,7 @@ export default class App extends Component {
       console.log(data)
     })
     socket.on('motion-detector-exit', data => console.log(data))
-    socket.on('disconnect', () => socket.emit('disconnect', 'disconnected'))
+    socket.on('disconnect', () => socket.close())
   }
 
   componentDidMount() {

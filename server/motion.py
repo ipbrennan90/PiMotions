@@ -10,8 +10,8 @@ SENSITIVITY = 300
 
 CAMERA_WIDTH = 128
 CAMERA_HEIGHT = 80
-CAMERA_HFLIP = TRUE
-CAMERA_VFLIP = TURE
+CAMERA_HFLIP = True
+CAMERA_VFLIP = True
 CAMERA_ROTATION = 0
 CAMERA_FRAMERATE = 35
 
@@ -26,6 +26,7 @@ class MotionDetector:
         self.camera.vflip = vflip
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
         self.stream = self.camera.capture_continuous(self.rawCapture, format="rgb", use_video_port=True)
+        self.stopped = False
 
     def start(self):
         t = Thread(target=self.update, args=())
@@ -86,7 +87,7 @@ def checkForMotion(data1, data2):
         motionDetected = True
     return motionDetected
 
-def main(cb):
+def main(vs, cb):
     frame_1 = vs.read()
     while True:
         frame_2 = vs.read()
@@ -96,8 +97,8 @@ def main(cb):
         
 def boot_motion(cb, exit_func):
     try:
-        vs = PiVideoStream().start()
+        vs = MotionDetector().start()
         time.sleep(2.0)
-        main(cb)
+        main(vs, cb)
     finally:
         exit_func()

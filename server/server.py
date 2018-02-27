@@ -73,7 +73,7 @@ def check_motion(message):
     def send_motion_event():
         emit('motion-detected', {'motion': 'found some motion'})
 
-    @copy_current_request_contest
+    @copy_current_request_context
     def motion_exit():
         emit('motion-detector-exit', {'exit': 'exited'})
         
