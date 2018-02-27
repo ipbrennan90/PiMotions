@@ -4,3 +4,4 @@ picamera==1.13
 Pillow==4.3.0
 requests==2.18.4
 flask-socketio==2.9.3
+numpy==1.14.1
