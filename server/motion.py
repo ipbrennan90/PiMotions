@@ -1,3 +1,4 @@
+from PIL import Image
 import time
 import datetime
 from io import BytesIO
@@ -5,8 +6,8 @@ from picamera import PiCamera
 from threading import Thread
 import math
 
-THRESHOLD = 200
-SENSITIVITY = 7000
+THRESHOLD = 30
+SENSITIVITY = 300
 
 CAMERA_WIDTH = 100
 CAMERA_HEIGHT = 100
@@ -19,11 +20,8 @@ CAMERA_FRAMERATE = 35
 class MotionDetector:
     def __init__(self, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=CAMERA_FRAMERATE, rotation=0, hflip=False, vflip=False):
         self.camera = PiCamera()
-        self.camera.resolution = resolution
-        self.camera.rotation = rotation
-        self.camera.framerate = framerate
-        self.camera.hflip = hflip
-        self.camera.vflip = vflip
+        self.camera.resolution=(CAMERA_WIDTH, CAMERA_HEIGHT)
+       
         self.stopped = False
 
     def start(self):
@@ -45,13 +43,16 @@ class MotionDetector:
         self.stopped = True
 
 def pix_diff(x,y, im_buff_1, im_buff_2):
-    pix_abs = abs(im_buff_1[x,y][1] - buffer2[x,y][1])
+    pix_abs = abs(im_buff_1[x,y][1] - im_buff_2[x,y][1])
     if pix_abs > THRESHOLD:
         return True
+    else:
+        return False
     
 def checkForMotion(im_buffer_1, im_buffer_2):
     motion_detected = False
-    changed_pixels = sum([pix_diff(x,y,im_buffer_1, im_buffer_2) for x,y in zip(xrange(0, CAMERA_WIDTH), xrange(0,CAMERA_HEIGHT))])
+    changed_list = [pix_diff(x,y,im_buffer_1, im_buffer_2) for x,y in zip(xrange(0, CAMERA_WIDTH), xrange(0,CAMERA_HEIGHT))]
+    changed_pixels = sum(changed_list)
     if changed_pixels > SENSITIVITY:
         return True, changed_pixels, SENSITIVITY
     else:
@@ -60,7 +61,7 @@ def checkForMotion(im_buffer_1, im_buffer_2):
 def main(md, cb):
     im_1, im_1_buffer = md.capture_image()
     while True:
-        im_2, im_2_buffer = md.capture_image
+        im_2, im_2_buffer = md.capture_image()
         motionDetected, pixChanges, sensitivity = checkForMotion(im_1_buffer, im_2_buffer)
         if motionDetected:
             cb(pixChanges,sensitivity)
@@ -68,7 +69,7 @@ def main(md, cb):
         
 def boot_motion(cb, exit_func):
     try:
-        md = MotionDetector().start()
+        md = MotionDetector()
         time.sleep(2.0)
         main(md, cb)
     finally:
