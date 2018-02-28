@@ -7,7 +7,7 @@ from threading import Thread
 import math
 
 THRESHOLD = 10
-SENSITIVITY = 300
+SENSITIVITY = 20
 
 CAMERA_WIDTH = 100
 CAMERA_HEIGHT = 100
@@ -21,7 +21,7 @@ class MotionDetector:
     def __init__(self, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=CAMERA_FRAMERATE, rotation=0, hflip=False, vflip=False):
         self.camera = PiCamera()
         self.camera.resolution=(CAMERA_WIDTH, CAMERA_HEIGHT)
-       
+        self.current_frame=None
         self.stopped = False
 
     def start(self):
@@ -29,6 +29,10 @@ class MotionDetector:
         t.daemon = True
         t.start()
         return self
+
+    def update(self):
+        self.current_frame = self.capture_image
+        
 
     def capture_image(self):
         stream = BytesIO()
