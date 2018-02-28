@@ -70,8 +70,8 @@ def check_motion(message):
     global RUN_CAM
     response = None
     @copy_current_request_context
-    def send_motion_event():
-        emit('motion-detected', {'motion': 'found some motion'})
+    def send_motion_event(pixChanged, sensitivity):
+        emit('motion-detected', {'pixChanged': pixChanged, 'sensitvity': sensitivity})
 
     @copy_current_request_context
     def motion_exit():

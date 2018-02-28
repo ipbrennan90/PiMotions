@@ -6,8 +6,8 @@ from threading import Thread
 import math
 import numpy as np
 
-THRESHOLD = 20
-SENSITIVITY = 300
+THRESHOLD = 200
+SENSITIVITY = 7000
 
 CAMERA_WIDTH = 128
 CAMERA_HEIGHT = 80
@@ -66,14 +66,15 @@ def checkForMotion(data1, data2):
         pixChanges = (np.absolute(data1[...,pixColor]-data2[...,pixColor])>THRESHOLD).sum()
     if pixChanges > SENSITIVITY:
         motionDetected = True        
-    return motionDetected  
+    return motionDetected, pixChanges, SENSITIVITY  
 
 def main(vs, cb):
     frame_1 = vs.read()
     while True:
         frame_2 = vs.read()
-        if checkForMotion(frame_1, frame_2):
-            cb() 
+        motionDetected, pixChanges, sensitivity = checkForMotion(frame_1, frame_2)
+        if motionDetected:
+            cb(pixChanges,sensitivity) 
         
 def boot_motion(cb, exit_func):
     try:
