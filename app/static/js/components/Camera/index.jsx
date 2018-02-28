@@ -7,12 +7,15 @@ const Camera = ({ innerRef, takeOnPi, image }) => (
     {takeOnPi ? (
       <img className="image" src={image} />
     ) : (
-      <ReactCamera
-        className={'yourCssClassHere'}
-        ref={innerRef}
-        width={800}
-        height={500}
-      />
+      <span>
+        <ReactCamera
+          className={'yourCssClassHere'}
+          ref={innerRef}
+          width={800}
+          height={500}
+        />
+        <img className="image" src={image} />
+      </span>
     )}
   </div>
 )
@@ -20,7 +23,7 @@ const Camera = ({ innerRef, takeOnPi, image }) => (
 Camera.propTypes = {
   innerRef: PropTypes.func,
   takeOnPi: PropTypes.bool,
-  image: PropTypes.string
+  image: PropTypes.string,
 }
 
 export default Camera
