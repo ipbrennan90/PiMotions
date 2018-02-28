@@ -6,7 +6,7 @@ from picamera import PiCamera
 from threading import Thread
 import math
 
-THRESHOLD = 30
+THRESHOLD = 10
 SENSITIVITY = 300
 
 CAMERA_WIDTH = 100
@@ -64,7 +64,10 @@ def main(md, cb):
         im_2, im_2_buffer = md.capture_image()
         motionDetected, pixChanges, sensitivity = checkForMotion(im_1_buffer, im_2_buffer)
         if motionDetected:
+            print("GOT MOTION", pixChanges)
             cb(pixChanges,sensitivity)
+        else:
+            print("NOTHING", pixChanges)
         im_1, im_1_buffer = im_2, im_2_buffer
         
 def boot_motion(cb, exit_func):
