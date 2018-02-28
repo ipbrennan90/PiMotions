@@ -16,6 +16,7 @@ CAMERA_VFLIP = True
 CAMERA_ROTATION = 0
 CAMERA_FRAMERATE = 35
 
+RUN_CAM = True
 
 class MotionDetector:
     def __init__(self, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=CAMERA_FRAMERATE, rotation=0, hflip=False, vflip=False):
@@ -64,7 +65,7 @@ def checkForMotion(im_buffer_1, im_buffer_2):
 
 def main(md, cb):
     im_1, im_1_buffer = md.capture_image()
-    while True:
+    while RUN_CAM:
         im_2, im_2_buffer = md.capture_image()
         motionDetected, pixChanges, sensitivity = checkForMotion(im_1_buffer, im_2_buffer)
         if motionDetected:
@@ -82,3 +83,10 @@ def boot_motion(cb, exit_func):
     finally:
         exit_func()
 
+def stop_cam():
+    global RUN_CAM
+    RUN_CAM = False
+
+def start_cam():
+    global RUN_CAM
+    RUN_CAM = True

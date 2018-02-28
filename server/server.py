@@ -12,7 +12,7 @@ from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
 import math
-from motion import boot_motion
+from motion import boot_motion, stop_cam, start_cam
 
 RUN_CAM = False
 ENTROPY_SAMPLE = []
@@ -87,10 +87,14 @@ def check_motion(message):
     boot_motion(send_motion_event, motion_exit)
     emit('motion response', {'data': response})
 
-@socketio.on('disconnect')
-def stop_detector():
-    global RUN_CAM
-    RUN_CAM = False
+@socketio.on('stop-cam')
+def stop():
+    stop_cam()
+
+@socketio.on('start-cam')
+def start():
+    start_cam()
+    
         
 
 if __name__ == "__main__":
