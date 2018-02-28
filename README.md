@@ -1,7 +1,7 @@
 # Welcome!
 ## Introduction
 
-We're excited that you are joining us to dive into the wonders of the [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/) today. As you may know, a Raspberry Pi is a tiny, affordable computer we can use to build all kinds of things. A Pi Zero W, the Pi we will work with today, is one of the smaller Pis.
+We're excited that you are joining us to dive into the wonders of the [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/) today. As you may know, a Raspberry Pi is a tiny, affordable computer we can use to build all kinds of things. A Pi Zero W, the Pi we will work with today, is the smallest Pi.
 
 In this tutorial, we're going to build a web application that can take a picture using our Pi with the click of a button.
 
@@ -33,32 +33,13 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 
 1. Fork the repo to your own account.
 2. Clone: `git@github.com:your-username/PiMotions.git`
-3. Navigate into the directory: `cd take-my-picture`
+3. Navigate into the directory: `cd PiMotions`
 4. Rename the `.env.example` file to `.env`
 
 ### 2. Download some tools
 
 1. Download [Docker](https://www.docker.com/community-edition)
 2. Download [Etcher](https://etcher.io/)
-
-### 3. Get the app running locally
-
-1. `cd app/static`
-2. Run `npm run docker-build`
-
-This will build a Docker image based on our Dockerfile and start our containers. Your app will now be running, so you can navigate to `localhost:80` in your browser to check it out.
-
-Note: We don't need to build the Docker image every time we want to start our app. If you want to start the app without rebuilding the image, you can run `npm run start`, which runs `docker-compose up` for us.
-
-3. Navigate to `localhost:80` in your browser. You should see the app running there.
-
-4. Click on "Webcam" under "Image Source" and then click "Take a Picture"!
-
-## What have we done so far?
-
-Right now we have an web app running locally that can take a picture using our computer's webcam. Our goal for the next section is to get the web app and our Pi talking to each other, so we can use the Pi's camera to take a picture.
-
-Right now, the "R Pi" button under "Image Source" doesn't do anything. We're about to fix that.
 
 ### 3. Set up and configure Resin.io application
 
@@ -100,19 +81,15 @@ Once the resinOS image has downloaded and we've completed our configuration step
 4. Click "Flash!"
 
 Once Etcher finishes creating the bootable SD card, it will eject it for you.
+While you're waiting for Etcher to finish, you can move on to step 6. (Step 5 requires the SD card).
 
 ### 5. Set up your Pi
+
 1. Insert the SD card into your Pi.
 2. Plug your Pi into your computer or a power source using a micro USB cable. (We need power!)
 3. It make take a few minutes, but your Pi should appear on your [Resin dashboard](https://dashboard.resin.io/apps).
 
-4. Enable a public url. Go into `Actions` on your device dashboard and click 'Enable All Public Device URLs'.
-Copy the public url and paste it into `app/static/.env` as the value for `RASPI_URL`.
-```
-RASPI_URL=<your resin machine public url here>
-```
-
-### 6. Make the magic happen :tada:
+### 6. Deploy code to your Pi
 
 1. Run `git push resin master`
 
@@ -122,8 +99,35 @@ If you're curious, you can look at the `Dockerfile.template` file to see the com
 Note: this may ask you to add this host to your list of allowed hosts. Type 'yes'.
 
 When you see a unicorn appear in your terminal, your push was successful!
+
 It may take a few minutes.
 
+### 7. Get the app running locally
+
+1. `cd app/static`
+2. Run `npm run docker-build`
+
+This will build a Docker image based on our Dockerfile and start our containers. Your app will now be running, so you can navigate to `localhost:80` in your browser to check it out.
+
+Note: We don't need to build the Docker image every time we want to start our app. If you want to start the app without rebuilding the image, you can run `npm run start`, which runs `docker-compose up` for us.
+
+3. Navigate to `localhost:80` in your browser. You should see the app running there.
+
+4. Click on "Webcam" under "Image Source" and then click "Take a Picture".
+
+### 8. Get the web app and the Pi talking to each other
+
+Now we have an web app running locally that can take a picture using our computer's webcam.
+The next step is to get the web app and the Pi talking to each other, so we can use the Pi's camera to take a picture.
+
+Right now, the "R Pi" button under "Image Source" doesn't do anything. We're about to fix that.
+
+1. Enable a public url for your device in Resin. Go into `Actions` on your device dashboard and click 'Enable All Public Device URLs'.
+Copy the public url and paste it into `app/static/.env` as the value for `RASPI_URL`.
+
+```
+RASPI_URL=<your resin machine public url here>
+```
 2. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
 
 :tada::tada::tada:
