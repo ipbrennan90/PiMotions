@@ -63,12 +63,8 @@ def take_picture():
     )
     return response
 
-@socketio.on('motion')
-def check_motion(message):
-    
-    logging.debug(message)
-    global RUN_CAM
-    response = None
+@socketio.on('motion-start')
+def check_motion():
     @copy_current_request_context
     def send_motion_event(pixChanged, sensitivity):
         emit('motion-detected', {'pixChanged': pixChanged, 'sensitvity': sensitivity})
@@ -76,24 +72,13 @@ def check_motion(message):
     @copy_current_request_context
     def motion_exit():
         emit('motion-detector-exit', {'exit': 'exited'})
-        
-                
-    if message == 'on':
-        RUN_CAM = True
-        response = "on"
-    else:
-        RUN_CAM = False
-        response = "off"
+    start_cam()
     boot_motion(send_motion_event, motion_exit)
     emit('motion response', {'data': response})
 
 @socketio.on('stop-cam')
 def stop():
     stop_cam()
-
-@socketio.on('start-cam')
-def start():
-    start_cam()
     
         
 

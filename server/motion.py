@@ -64,6 +64,7 @@ def checkForMotion(im_buffer_1, im_buffer_2):
         return False, changed_pixels, SENSITIVITY
 
 def main(md, cb):
+    print("STARTING MAIN LOOP")
     im_1, im_1_buffer = md.capture_image()
     while RUN_CAM:
         im_2, im_2_buffer = md.capture_image()
@@ -79,14 +80,19 @@ def boot_motion(cb, exit_func):
     try:
         md = MotionDetector()
         time.sleep(2.0)
-        main(md, cb)
+        t = Thread(target=main, args=(md, cb))
+        t.daemon = True
+        t.start()
     finally:
         exit_func()
 
 def stop_cam():
+    print("STOPPING CAM !!! ! ! !  ! ! ")
     global RUN_CAM
     RUN_CAM = False
+    return
 
 def start_cam():
     global RUN_CAM
     RUN_CAM = True
+    return

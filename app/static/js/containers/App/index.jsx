@@ -36,7 +36,9 @@ export default class App extends Component {
       console.log(data)
     })
     socket.on('motion-detector-exit', data => console.log(data))
-    socket.on('disconnect', () => socket.close())
+    socket.on('disconnect', () => {
+      console.log('disconnected')
+    })
   }
 
   componentDidMount() {
@@ -67,10 +69,11 @@ export default class App extends Component {
 
   turnOnMotion() {
     if (this.state.motionDetector === 'on') {
-      socket.emit('motion', 'off')
+      socket.emit('stop-cam')
       this.setState({ motionDetector: 'off' })
     } else {
-      socket.emit('motion', 'on')
+      debugger
+      socket.emit('motion-start')
       this.setState({ motionDetector: 'on' })
     }
   }
