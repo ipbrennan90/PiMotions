@@ -12,7 +12,7 @@ from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
 import math
-from motion import boot_motion, stop_cam, start_cam
+from motion import boot_motion, stop_cam, start_cam, set_sensitivity, set_threshold, get_threshold, get_sensitivity
 
 RUN_CAM = False
 ENTROPY_SAMPLE = []
@@ -75,9 +75,32 @@ def check_motion():
     start_cam()
     boot_motion(send_motion_event, motion_exit)
 
+    
+@socketio.on('set-threshold')
+def set_motion_threshold(threshold):
+    set_threshold(threshold)
+    emit('threshold', {'threshold': threshold})
+
+@socketio.on('set-sensitivity')
+def set_motion_threshold(sensitivity):
+    set_sensitivity(sensitivity)
+    emit('sensitivity', {'sensitivity': sensitivity})
+
 @socketio.on('stop-cam')
 def stop():
     stop_cam()
+
+@socketio.on('disconnect')
+def diconnect():
+    stop_cam()
+
+@socketio.on('connect')
+def connect():
+    threshold = get_threshold()
+    sensitivity = get_sensitivity()
+    emit('threshold', {'threshold': threshold})
+    emit('sensitivity', {'sensitivity': sensitivity})
+    
     
         
 

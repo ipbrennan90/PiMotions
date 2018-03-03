@@ -26,18 +26,34 @@ export default class App extends Component {
       webCam: false,
       takeOnPi: true,
       pics: [],
+      motionDetection: false,
+      sensitivity: null,
+      threshold: null,
+      detectionData: {
+        motion: false,
+        pixChanged: 0,
+      },
     }
   }
 
   turnOnSocket() {
-    socket.on('connect', () => console.log('connected'))
+    socket.on('connect', () => {
+      this.setState({ motionDetection: true })
+    })
     socket.on('motion response', data => console.log(data))
     socket.on('motion-detected', data => {
       console.log(data)
+      this.setState({ detectionData: data })
+    })
+    socket.on('sensitivity', data => {
+      this.setState({ sensitivity: data.sensitivity })
+    })
+    socket.on('threshold', data => {
+      this.setState({ threshold: data.threshold })
     })
     socket.on('motion-detector-exit', data => console.log(data))
     socket.on('disconnect', () => {
-      console.log('disconnected')
+      this.setState({ motionDetection: false })
     })
   }
 
@@ -65,6 +81,16 @@ export default class App extends Component {
     } else {
       snapshot(this.camera, this)
     }
+  }
+
+  handleSensitivityChange(e) {
+    console.log(e.target.value)
+    socket.emit('set-sensitivity', e.target.value)
+  }
+
+  handleThresholdChange(e) {
+    console.log(e.target.value)
+    socket.emit('set-threshold', e.target.value)
   }
 
   turnOnMotion() {
@@ -110,7 +136,16 @@ export default class App extends Component {
   }
 
   render() {
-    const { isPi, takeOnPi, image, pics } = this.state
+    const {
+      isPi,
+      takeOnPi,
+      image,
+      motionDetection,
+      sensitivity,
+      threshold,
+    } = this.state
+
+    const motionBackground = this.state.detectionData.motion ? 'green' : 'red'
 
     return (
       <div className="container">
@@ -126,11 +161,68 @@ export default class App extends Component {
         <button className="button trigger" onClick={this.handleClick}>
           Take Picture
         </button>
-        <button className="button" onClick={this.turnOnMotion}>
-          TURN MOTION DETECTOR{' '}
-          {this.state.motionDetector === 'on' ? 'OFF' : 'ON'}
-        </button>
-        {this.renderPicStream(pics)}
+
+        {this.state.motionDetection && (
+          <div style={{ width: '100%', height: '300px' }}>
+            <button className="button" onClick={this.turnOnMotion}>
+              TURN MOTION DETECTOR{' '}
+              {this.state.motionDetector === 'on' ? 'OFF' : 'ON'}
+            </button>
+            <div style={{ width: '100%', height: '50px' }}>
+              <div
+                style={{
+                  width: `${this.state.detectionData.pixChanged / 256 * 100}%`,
+                  height: '100%',
+                  backgroundColor: `${motionBackground}`,
+                }}
+              />
+            </div>
+            <label
+              style={{
+                width: '100%',
+                height: '20px',
+                marginTop: '20px',
+                marginBottom: '20px',
+                display: 'block',
+              }}
+              htmlFor="sensitivity"
+            >
+              sensitivity: {this.state.sensitivity}
+            </label>
+            <input
+              type="range"
+              onMouseUp={this.handleSensitivityChange}
+              id="sensitivity"
+              min="0"
+              defaultValue="20"
+              max="500"
+              step="1"
+              style={{ width: '100%' }}
+            />
+            <label
+              style={{
+                width: '100%',
+                height: '20px',
+                marginTop: '20px',
+                marginBottom: '20px',
+                display: 'block',
+              }}
+              htmlFor="threshold"
+            >
+              threshold: {this.state.threshold}
+            </label>
+            <input
+              type="range"
+              onMouseUp={this.handleThresholdChange}
+              id="threshold"
+              min="0"
+              defaultValue="10"
+              max="500"
+              step="1"
+              style={{ width: '100%' }}
+            />
+          </div>
+        )}
 
         <hr />
         <footer className="footer">

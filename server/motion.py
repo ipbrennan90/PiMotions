@@ -51,7 +51,6 @@ class MotionDetector:
         im_1, im_1_buffer = self.capture_image()
         while True:
             if not RUN_CAM:
-                print("EXITING THREAD !!!! ")
                 self.stop()
                 break
             im_2, im_2_buffer = self.capture_image()
@@ -83,7 +82,6 @@ def boot_motion(cb, exit_func):
         exit_func(e)
 
 def stop_cam():
-    print("STOPPING CAM !!! ! ! !  ! ! ")
     global RUN_CAM
     RUN_CAM = False
     return
@@ -92,3 +90,25 @@ def start_cam():
     global RUN_CAM
     RUN_CAM = True
     return
+
+def restart_motion():
+    if RUN_CAM:
+        stop_cam()
+        time.sleep(2)
+        start_cam()
+
+def set_sensitivity(sensitivity):
+    global SENSITIVITY
+    SENSITIVITY = sensitivity
+    restart_motion()
+
+def set_threshold(threshold):
+    global THRESHOLD
+    THRESHOLD = threshold
+    restart_motion()
+
+def get_threshold():
+    return THRESHOLD
+
+def get_sensitivity():
+    return SENSITIVITY
