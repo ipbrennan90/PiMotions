@@ -70,8 +70,8 @@ def check_motion():
         emit('motion-detected', {'pixChanged': pixChanged, 'motion': motion_detected})
 
     @copy_current_request_context
-    def motion_exit():
-        emit('motion-detector-exit', {'exit': 'exited'})
+    def motion_exit(e):
+        emit('motion-detector-exit', {'exit': e})
     start_cam()
     boot_motion(send_motion_event, motion_exit)
 
