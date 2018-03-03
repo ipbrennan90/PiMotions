@@ -1,10 +1,17 @@
-# Part 1
+| Table Of Contents                   |
+| ------------------------------------|
+| [Introduction](README.md)           |
+| [Part 0: Prework](prework.md)       |
+| Part 1: Pi and Web App              |
+| [Part 2: Motion Detection](part2.md)|
+
+# Part 1: Pi and Web App
 ## Introduction
 
 In Part 1 of this tutorial, you are going to set up your Pi and get a web application running locally.
-By the end of Part 1, you will have the web application communicating with the Pi so that we can click a button on the web app to take a picture with the Pi.
+By the end of Part 1, you will have the web application communicating with the Pi so that you can click a button on the web app to take a picture with the Pi's camera.
 
-**Important: Make sure you have completed the [prework](prework.md)! The following steps will only work if you have completed the prework steps.**
+**Important: Make sure you complete the [prework](prework.md) before diving in to Part 1.**
 
 ## Part 1 Steps
 - Fork and clone this repo to your own machine
@@ -106,6 +113,6 @@ RASPI_URL=<your public url here>
 
 :tada::tada::tada:
 
-Your web app is now set up to take pictures using your computer's webcam and using your Pi.
+Your web app is now set up to take pictures using your computer's webcam **and** using your Pi.
 
 **In the [Part 2](part2.md), we'll write code to detect motion using the picamera.**
