@@ -20,10 +20,7 @@ RUN_CAM = True
 
 class MotionDetector:
     def __init__(self, resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=CAMERA_FRAMERATE, rotation=0, hflip=False, vflip=False):
-        self.camera = PiCamera()
-        self.camera.resolution=(CAMERA_WIDTH, CAMERA_HEIGHT)
-        self.current_frame=None
-        self.stopped = False
+        self.camera = None
 
     def start(self):
         t = Thread(target=self.update, args=())
@@ -45,7 +42,12 @@ class MotionDetector:
 
     def stop(self):
         # set thread indicator to stop thread
-        self.stopped = True
+        self.camera.close()
+        self.camera = None
+
+    def start(self):
+        self.camera = PiCamera()
+        self.camera.resolution=(CAMERA_WIDTH, CAMERA_HEIGHT)
 
 def pix_diff(x,y, im_buff_1, im_buff_2):
     pix_abs = abs(im_buff_1[x,y][1] - im_buff_2[x,y][1])
@@ -66,19 +68,20 @@ def checkForMotion(im_buffer_1, im_buffer_2):
 def main(md, cb):
     print("STARTING MAIN LOOP")
     im_1, im_1_buffer = md.capture_image()
-    while RUN_CAM:
+    while True:
+        if not RUN_CAM:
+            print("EXITING THREAD !!!! ")
+            md.stop()
+            break
         im_2, im_2_buffer = md.capture_image()
         motionDetected, pixChanges, sensitivity = checkForMotion(im_1_buffer, im_2_buffer)
-        if motionDetected:
-            print("GOT MOTION", pixChanges)
-            cb(pixChanges,sensitivity)
-        else:
-            print("NOTHING", pixChanges)
+        cb(pixChanges, motionDetected)
         im_1, im_1_buffer = im_2, im_2_buffer
         
 def boot_motion(cb, exit_func):
     try:
         md = MotionDetector()
+        md.start()
         time.sleep(2.0)
         t = Thread(target=main, args=(md, cb))
         t.daemon = True

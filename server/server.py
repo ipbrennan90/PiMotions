@@ -66,15 +66,14 @@ def take_picture():
 @socketio.on('motion-start')
 def check_motion():
     @copy_current_request_context
-    def send_motion_event(pixChanged, sensitivity):
-        emit('motion-detected', {'pixChanged': pixChanged, 'sensitvity': sensitivity})
+    def send_motion_event(pixChanged, motion_detected):
+        emit('motion-detected', {'pixChanged': pixChanged, 'motion': motion_detected})
 
     @copy_current_request_context
     def motion_exit():
         emit('motion-detector-exit', {'exit': 'exited'})
     start_cam()
     boot_motion(send_motion_event, motion_exit)
-    emit('motion response', {'data': response})
 
 @socketio.on('stop-cam')
 def stop():
