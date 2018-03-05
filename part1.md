@@ -27,7 +27,7 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 
 1. Fork the repo to your own account.
 2. Clone: `git@github.com:your-username/PiMotions.git`
-3. Navigate into the directory: `cd PiMotions`
+3. Navigate into the directory: `cd PiMotions/app/static`
 4. Rename the `.env.example` file to `.env`
 
 ### 2. Set up and configure your resin.io application
