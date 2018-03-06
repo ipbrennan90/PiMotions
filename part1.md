@@ -50,7 +50,7 @@ While the resinOS image is downloading, do the following:
 
 These variables make sure that the camera works on the Pi.
 
-7. Add a resin.io remote repo by copying the **git remote add** command in the top right of your dashboard, and running it in the terminal.
+6. Add a resin.io remote repo by copying the **git remote add** command in the top right of your dashboard, and running it in the terminal.
 
 While you're waiting for the resinOS image download to finish, you can move on to the next step, which is to get the app running locally.
 
