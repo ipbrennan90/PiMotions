@@ -87,7 +87,7 @@ Once Etcher finishes creating the bootable SD card, it will eject it for you.
 
 ### 6. Deploy code to your Pi
 
-1. From your project directory, run `git push resin master`
+1. From your project directory (`PiMotions/`), run `git push resin master`
 
 This is going to deploy the code in the `server/` directory to our Pi.
 If you're curious, you can look at the `Dockerfile.template` file to see the commands that are run.
@@ -98,7 +98,7 @@ When you see a unicorn appear in your terminal, your push was successful!
 
 ### 8. Get the web app and the Pi talking to each other
 
-Now we have an web app running locally that can take a picture using our computer's webcam.
+We have an web app running locally that can take a picture using our computer's webcam.
 The next step is to get the web app and the Pi talking to each other, so we can use the Pi's camera to take a picture.
 
 Right now, the "R Pi" button under "Image Source" doesn't do anything. We're about to fix that.
@@ -109,7 +109,11 @@ Copy the public url and paste it into `app/static/.env` as the value for `RASPI_
 ```
 RASPI_URL=<your public url here>
 ```
-2. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
+2. Navigate to `app/static` directory: `cd app/static`.
+
+3. Run `npm run docker-down`, and then run `npm run docker-build`.
+
+4. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
 
 :tada::tada::tada:
 

@@ -22,7 +22,7 @@ We are going to download the necessary tools, and make sure we have a resin.io a
 
 Click to expand:
 
-<details><summary>For Windows Users</summary>
+<details><summary>For Windows users</summary>
 <p>
 
 ### 1. Download necessary tools
