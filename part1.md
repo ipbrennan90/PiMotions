@@ -28,7 +28,7 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 1. Fork the repo to your own account.
 2. Clone: `git@github.com:your-username/PiMotions.git`
 3. Navigate into the directory: `cd PiMotions/app/static`
-4. Rename the `.env.example` file to `.env`
+4. Rename the `.env.example` file to `.env` by running `mv .env.example .env` in your terminal.
 
 ### 2. Set up and configure your resin.io application
 
@@ -50,7 +50,7 @@ While the resinOS image is downloading, do the following:
 
 These variables make sure that the camera works on the Pi.
 
-7. If you aren't already there, navigate in your terminal to your project directory (`cd PiMotions`). Add a resin.io remote repo by copying the `git remote add` command in the top right of your dashboard.
+7. Add a resin.io remote repo by copying the **git remote add** command in the top right of your dashboard, and running it in the terminal.
 
 While you're waiting for the resinOS image download to finish, you can move on to the next step, which is to get the app running locally.
 
