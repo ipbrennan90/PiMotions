@@ -2,6 +2,7 @@ from threading import Thread
 import time
 from camera import Camera
 import math
+import sys
 
 # Threshold is the threshold of change in the color value of a pixel
 THRESHOLD = 10

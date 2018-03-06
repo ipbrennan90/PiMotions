@@ -44,7 +44,6 @@ def snap():
     camera.start()
     try:
         path = get_temp_path('capture')
-        camera.start()
         camera.device.capture(path)
         img_str = open_image(path)
     except (ValueError, RuntimeError, TypeError, NameError):
@@ -73,7 +72,8 @@ def check_motion():
 
     @copy_current_request_context
     def motion_exit(e):
-        emit('motion-detector-exit', {'exit': e})
+        logging.exception(e)
+        emit('motion-detector-exit', {'exit': 'there was an error in the detector'})
     start_detector()
     boot_motion(send_motion_event, motion_exit)
 

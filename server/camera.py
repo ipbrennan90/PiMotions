@@ -1,6 +1,7 @@
 from PIL import Image
 from io import BytesIO
 from picamera import PiCamera
+import time
 
 CAMERA_WIDTH = 100
 CAMERA_HEIGHT = 100
@@ -35,7 +36,7 @@ class Camera:
     
     def capture_image(self):
         stream = BytesIO()
-        self.camera.capture(stream, format='jpeg')
+        self.device.capture(stream, format='jpeg')
         stream.seek(0)
         im = Image.open(stream)
         im_buffer = im.load()
