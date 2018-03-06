@@ -27,7 +27,7 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 
 1. Fork the repo to your own account.
 2. Clone: `git@github.com:your-username/PiMotions.git`
-3. Navigate into the directory: `cd PiMotions/app/static`
+3. Navigate into the `static` directory: `cd PiMotions/app/static`
 4. Rename the `.env.example` file to `.env` by running `mv .env.example .env` in your terminal.
 
 ### 2. Set up and configure your resin.io application
@@ -56,7 +56,7 @@ While you're waiting for the resinOS image download to finish, you can move on t
 
 ### 3. Get the app running locally
 
-1. Navigate to the `static` directory: `cd app/static`
+1. Make sure you are in the `app/static` directory.
 2. Run `npm run docker-build`
 
 This will build a Docker image based on our Dockerfile and start our containers. You can follow the process by watching your terminal output.
@@ -87,7 +87,9 @@ Once Etcher finishes creating the bootable SD card, it will eject it for you.
 
 ### 6. Deploy code to your Pi
 
-1. From your project directory (`PiMotions/`), run `git push resin master`
+1. Navigate to the root of your project (the `PiMotions/` directory). If you're in the `app/static` directory, run `cd ..; cd ..` to get to `PiMotions/`.
+
+2. Run `git push resin master`
 
 This is going to deploy the code in the `server/` directory to our Pi.
 If you're curious, you can look at the `Dockerfile.template` file to see the commands that are run.
@@ -99,17 +101,17 @@ When you see a unicorn appear in your terminal, your push was successful!
 ### 8. Get the web app and the Pi talking to each other
 
 We have an web app running locally that can take a picture using our computer's webcam.
-The next step is to get the web app and the Pi talking to each other, so we can use the Pi's camera to take a picture.
+The next step is to get the web app and the Pi talking to each other, so that we can use the Pi's camera to take a picture.
 
 Right now, the "R Pi" button under "Image Source" doesn't do anything. We're about to fix that.
 
-1. Enable a public url for your device. Go into `Actions` on your resin.io device dashboard and click 'Enable All Public Device URLs'.
+1. Enable a public url for your device. Go into "Actions" on your resin.io device dashboard and click "Enable All Public Device URLs".
 Copy the public url and paste it into `app/static/.env` as the value for `RASPI_URL`.
 
 ```
 RASPI_URL=<your public url here>
 ```
-2. Navigate to `app/static` directory: `cd app/static`.
+2. Navigate to `app/static` directory by running `cd app/static` in your terminal.
 
 3. Run `npm run docker-down`, and then run `npm run docker-build`.
 
