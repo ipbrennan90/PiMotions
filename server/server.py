@@ -12,7 +12,8 @@ from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
 import math
-from motion import boot_motion, stop_cam, start_cam, set_sensitivity, set_threshold, get_threshold, get_sensitivity
+from motion_detector import boot_motion, stop_detector, start_detector, set_sensitivity, set_threshold, get_threshold, get_sensitivity
+from camera import Camera
 
 RUN_CAM = False
 ENTROPY_SAMPLE = []
@@ -21,6 +22,7 @@ ENTROPY_SAMPLE = []
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app)
+camera = Camera()
 
 
 def get_temp_path(name):
@@ -39,16 +41,16 @@ def open_image(path):
 
 def snap():
     img_str = ''
-    camera = picamera.PiCamera()
-    
+    camera.start()
     try:
         path = get_temp_path('capture')
-        camera.capture(path)
+        camera.start()
+        camera.device.capture(path)
         img_str = open_image(path)
     except (ValueError, RuntimeError, TypeError, NameError):
         logging.exception("could not capture image")
     finally:
-        camera.close()
+        camera.stop()
     return  (img_str, path)
 
 @app.route('/take')
@@ -72,7 +74,7 @@ def check_motion():
     @copy_current_request_context
     def motion_exit(e):
         emit('motion-detector-exit', {'exit': e})
-    start_cam()
+    start_detector()
     boot_motion(send_motion_event, motion_exit)
 
     
@@ -88,11 +90,11 @@ def set_motion_threshold(sensitivity):
 
 @socketio.on('stop-cam')
 def stop():
-    stop_cam()
+    stop_detector()
 
 @socketio.on('disconnect')
 def diconnect():
-    stop_cam()
+    stop_detector()
 
 @socketio.on('connect')
 def connect():
