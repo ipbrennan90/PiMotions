@@ -57,7 +57,8 @@ While you're waiting for the resinOS image download to finish, you can move on t
 ### 3. Get the app running locally
 
 1. Make sure you are in the `app/static` directory.
-2. Run `npm run docker-build`
+2. Make sure Docker is running
+3. Run `npm run docker-build`
 
 This will build a Docker image based on our Dockerfile and start our containers. You can follow the process by watching your terminal output.
 Once it finishes, your app will be running, so you can navigate to `localhost:80` in your browser to check it out.
@@ -85,6 +86,8 @@ Once Etcher finishes creating the bootable SD card, it will eject it for you.
 2. Plug your Pi into your computer or a power source using a micro USB cable. (We need power!)
 3. It make take a few minutes, but your Pi should appear on your [resin.io dashboard](https://dashboard.resin.io/apps).
 
+Once your Pi appears in your dashboard you are good to proceed!
+
 ### 6. Deploy code to your Pi
 
 1. Navigate to the root of your project (the `PiMotions/` directory). If you're in the `app/static` directory, run `cd ..; cd ..` to get to `PiMotions/`.
@@ -97,6 +100,8 @@ If you're curious, you can look at the `Dockerfile.template` file to see the com
 Note: this may ask you to add this host to your list of allowed hosts. Type 'yes'.
 
 When you see a unicorn appear in your terminal, your push was successful!
+
+Visit your device's Resin page to monitor download progress. This will take ~15 minutes over wifi. While this takes place, continue with setup below!
 
 ### 7. Get the web app and the Pi talking to each other
 
@@ -115,7 +120,9 @@ RASPI_URL=<your public url here>
 
 3. Run `npm run docker-down`, and then run `npm run docker-build`.
 
-4. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
+4. Check your device's Resin page -- if the download is complete, proceed!
+
+5. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
 
 :tada::tada::tada:
 
