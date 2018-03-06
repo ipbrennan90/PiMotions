@@ -98,7 +98,7 @@ Note: this may ask you to add this host to your list of allowed hosts. Type 'yes
 
 When you see a unicorn appear in your terminal, your push was successful!
 
-### 8. Get the web app and the Pi talking to each other
+### 7. Get the web app and the Pi talking to each other
 
 We have an web app running locally that can take a picture using our computer's webcam.
 The next step is to get the web app and the Pi talking to each other, so that we can use the Pi's camera to take a picture.
