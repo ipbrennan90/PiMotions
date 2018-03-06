@@ -14,9 +14,7 @@ We're excited that you are joining us on **March 10, 2018** to dive into the won
 - In [Part 1](part1.md) of this workshop, we're going to set up a web application that can take a picture using our Pi with the click of a button.
 - In [Part 2](part2.md), we will write code to detect motion using the camera connected to the Pi.
 
-To make the workshop run as smoothly as possible, we ask that you to complete the [prework](prework.md) steps ahead of time.
-
-The prework steps should only take you 10 - 15 minutes to complete, and having them done ahead of time will **greatly improve your experience**. You won't have to wait for a bunch of things to download over hotel wifi.
+To make the workshop run as smoothly as possible, you'll need to complete the [prework](prework.md) steps ahead of time.
 
 ## Overview
 We're going to cover a lot of ground in this workshop. :tada:
