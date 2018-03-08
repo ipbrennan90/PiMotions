@@ -98,7 +98,6 @@ export default class App extends Component {
       socket.emit('stop-cam')
       this.setState({ motionDetector: 'off' })
     } else {
-      debugger
       socket.emit('motion-start')
       this.setState({ motionDetector: 'on' })
     }

@@ -7,7 +7,6 @@ import tempfile
 import logging
 from datetime import datetime
 import os
-import picamera
 from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 import threading
