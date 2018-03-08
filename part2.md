@@ -34,15 +34,6 @@ Let's look quickly at `capture_image`, since that's the one that's going to be m
 
 **Code Example 1:**
 _from PiMotions/server/camera.py_:
-```python {.line-numbers}
- def capture_image(self):
-    stream = BytesIO()
-    self.device.capture(stream, format='jpeg')
-    stream.seek(0)
-    im = Image.open(stream)
-    im_buffer = im.load()
-    return im_buffer
-```
 ![Code Example 2](docs/images/ex-1.png)
 
 `self` is the instance of the camera class.
@@ -86,19 +77,6 @@ When the function `send_motion_event` (line 4) is called, the Pi emits a message
 
 **Code Example 2:**
 _from PiMotions/server/server.py_:
-```python {.line-numbers}
-@socketio.on('motion-start')
-def check_motion():
-    @copy_current_request_context
-    def send_motion_event(pixChanged, motion_detected):
-        emit('motion-detected', {'pixChanged': pixChanged, 'motion': motion_detected})
-
-    @copy_current_request_context
-    def motion_exit(e):
-        # body of function omitted for clarity
-    start_detector()
-    boot_motion(send_motion_event, motion_exit)
-```
 ![Code Example 2](docs/images/ex-2.png)
 
 Now that we know what our camera looks like and how the real-time communication works between the Pi and the web app, let's write some motion-detecting code of our own!
@@ -113,7 +91,7 @@ Open motion-detector.py in your text editor.
 1) We have values for threshold, sensitivity, and whether or not our motion detector is running at the top of the file.
 
 _from PiMotions/server/motion-detector.py_:
-```python {.line-numbers}
+```python
 # Threshold is the threshold of change in the color value of a pixel
 THRESHOLD = 10
 
@@ -130,36 +108,14 @@ In `boot_motion`, we take the "send_motion_event" as one of the arguments (**Cod
 
 **Code Example 3:**
 _from PiMotions/server/server.py_:
-```python {.line-numbers}
-@socketio.on('motion-start')
-def check_motion():
-    # ...
-    def send_motion_event(pixChanged, motion_detected):
-        emit('motion-detected', {'pixChanged': pixChanged, 'motion': motion_detected})
-    # ...
-    boot_motion(send_motion_event, motion_exit)
-```
-
+![Code Example 3](docs/images/ex-3.png)
 
 In motion_detector.py (excerpted below in **Code Example 4**), we can see that the first argument to `boot_motion` is a callback (cb). We use that callback in the initialization of our `MotionDetector` class (line 8). At some point (not yet implemented), we'll call that callback, which will then cause the Pi to emit the 'motion-detected' message to the web app with the data it needs (line 5 above in **Code Example 3**)
 
 
 **Code Example 4:**
 _from PiMotions/server/motion-detector.py_:
-```python {.line-numbers}
-# cb is the callback 'send_motion_event'
-# when we call the 'send_motion_event' callback (not yet implemented),
-# the Pi will send the 'motion-detected' message to the front end.
-
-def boot_motion(cb, exit_func):
-    try:
-        # initializing MotionDetector with the callback
-        md = MotionDetector(cb)
-        md.start()
-    except:
-        e = sys.exc_info()[0]
-        exit_func(e)
-```
+![Code Example 4](docs/images/ex-4.png)
 
 In addition to ```boot_motion```, we have some other utility functions at the bottom of the motion-detector.py file written for us. We'll use these for build out our motion-detecting functionality.
 
@@ -168,25 +124,13 @@ put multithreading expl. here
 
 **Code Example 5:**
 _from PiMotions/server/motion-detector.py_:
-```python {.line-numbers}
-class MotionDetector:
-
-    def __init__(self, cb):
-        self.cb = cb
-        self.camera = Camera()
-
-    def start(self):
-        self.camera.start()
-        t = Thread(target=self.detector)
-        t.daemon = True
-        t.start()
-```
+![Code Example 5](docs/images/ex-5.png)
 
 #### Okay, we're ready to write some code!
 
 We're going to implement the `detector`, `check_for_motion`, and `pix_diff` methods in the `MotionDetector` class. Once we do that, we'll have a working motion-detecting application that leverages the Raspberry Pi.
 
-```python {.line-numbers}
+```python
 class MotionDetector:
 
     def __init__(self, cb):
