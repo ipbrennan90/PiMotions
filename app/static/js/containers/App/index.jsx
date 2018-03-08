@@ -96,7 +96,13 @@ export default class App extends Component {
   turnOnMotion() {
     if (this.state.motionDetector === 'on') {
       socket.emit('stop-cam')
-      this.setState({ motionDetector: 'off' })
+      this.setState({
+        motionDetector: 'off',
+        detectionData: {
+          motion: false,
+          pixChanged: 0,
+        },
+      })
     } else {
       socket.emit('motion-start')
       this.setState({ motionDetector: 'on' })
