@@ -43,6 +43,7 @@ _from PiMotions/server/camera.py_:
     im_buffer = im.load()
     return im_buffer
 ```
+![Code Example 2](docs/images/ex-1.png)
 
 `self` is the instance of the camera class.
 `self.device` is set to an instance of PiCamera in the `start` method.
@@ -98,6 +99,7 @@ def check_motion():
     start_detector()
     boot_motion(send_motion_event, motion_exit)
 ```
+![Code Example 2](docs/images/ex-2.png)
 
 Now that we know what our camera looks like and how the real-time communication works between the Pi and the web app, let's write some motion-detecting code of our own!
 
