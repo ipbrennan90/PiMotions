@@ -49,6 +49,12 @@ hr {
   width: auto;
 }
 
+.picture-box {
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
 .trigger {
   border: none;
   background: #fe5f55;
