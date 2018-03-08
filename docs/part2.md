@@ -55,9 +55,11 @@ If we wanted to, we could access a specific pixel in the `im_buffer` by providin
   y = 12
   print(image_buffer[x,y])
 ```
-could return something like ```(10,148,218)```, representing the R, G, and B values respectively of the pixel at that `x,y` location.
+could return something like ```(10, 232, 218)```, representing the R, G, and B values respectively of the pixel at that `x,y` location.
 
-In case you were wondering, the color rgb(10, 232, 218) looks like <span style="color:#0ae8da;">this!</span>
+In case you were wondering, the color rgb(10, 232, 218) looks like this!
+
+![Color Sample](./images/color.png)
 
 With an understanding of our camera under our belts, let's take a quick tour through our server.py file.
 
@@ -156,6 +158,10 @@ class MotionDetector:
         pass
 
 ```
+
+The first method we're going to write is the `detector` method.
+
+
 
 The completed code is on a branch called `motion-detection-complete`.
 
