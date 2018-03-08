@@ -1,6 +1,6 @@
 | Table Of Contents                   |
 | ------------------------------------|
-| [Introduction](README.md)           |
+| [Introduction](../README.md)        |
 | Part 0: Prework                     |
 | [Part 1: Pi and Web App](part1.md)  |
 | [Part 2: Motion Detection](part2.md)|

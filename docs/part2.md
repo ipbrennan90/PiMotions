@@ -1,6 +1,6 @@
 | Table Of Contents                   |
 | ------------------------------------|
-| [Introduction](README.md)           |
+| [Introduction](../README.md)           |
 | [Part 0: Prework](prework.md)       |
 | [Part 1: Pi and Web App](part1.md)  |
 | Part 2: Motion Detection            |
@@ -34,7 +34,7 @@ Let's look quickly at `capture_image`, since that's the one that's going to be m
 
 **Code Example 1:**
 _from PiMotions/server/camera.py_:
-![Code Example 2](docs/images/ex-1.png)
+![Code Example 2](./images/ex-1.png)
 
 `self` is the instance of the camera class.
 `self.device` is set to an instance of PiCamera in the `start` method.
@@ -77,7 +77,7 @@ When the function `send_motion_event` (line 4) is called, the Pi emits a message
 
 **Code Example 2:**
 _from PiMotions/server/server.py_:
-![Code Example 2](docs/images/ex-2.png)
+![Code Example 2](./images/ex-2.png)
 
 Now that we know what our camera looks like and how the real-time communication works between the Pi and the web app, let's write some motion-detecting code of our own!
 
@@ -108,14 +108,14 @@ In `boot_motion`, we take the "send_motion_event" as one of the arguments (**Cod
 
 **Code Example 3:**
 _from PiMotions/server/server.py_:
-![Code Example 3](docs/images/ex-3.png)
+![Code Example 3](./images/ex-3.png)
 
 In motion_detector.py (excerpted below in **Code Example 4**), we can see that the first argument to `boot_motion` is a callback (cb). We use that callback in the initialization of our `MotionDetector` class (line 8). At some point (not yet implemented), we'll call that callback, which will then cause the Pi to emit the 'motion-detected' message to the web app with the data it needs (line 5 above in **Code Example 3**)
 
 
 **Code Example 4:**
 _from PiMotions/server/motion-detector.py_:
-![Code Example 4](docs/images/ex-4.png)
+![Code Example 4](./images/ex-4.png)
 
 In addition to ```boot_motion```, we have some other utility functions at the bottom of the motion-detector.py file written for us. We'll use these for build out our motion-detecting functionality.
 
@@ -124,7 +124,7 @@ put multithreading expl. here
 
 **Code Example 5:**
 _from PiMotions/server/motion-detector.py_:
-![Code Example 5](docs/images/ex-5.png)
+![Code Example 5](./images/ex-5.png)
 
 #### Okay, we're ready to write some code!
 
