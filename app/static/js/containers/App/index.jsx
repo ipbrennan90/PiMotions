@@ -132,7 +132,7 @@ export default class App extends Component {
     return (
       <div className="container">
         <header className="header">
-          <h1>Take My Picture</h1>
+          <h1>PiMotions</h1>
         </header>
         <PiConditional chooseCam={this.chooseCam} selected={takeOnPi} />
         <Camera
