@@ -59,9 +59,9 @@ Motion.propTypes = {
   motionDetector: PropTypes.string,
   motionWidth: PropTypes.number,
   motionBackground: PropTypes.string,
-  sensitivity: PropTypes.number,
+  sensitivity: PropTypes.string,
   handleSensitivityChange: PropTypes.func,
-  threshold: PropTypes.number,
+  threshold: PropTypes.string,
   handleThresholdChange: PropTypes.func,
 }
 

@@ -78,6 +78,7 @@ export default class App extends Component {
 
   handleClick() {
     if (this.state.takeOnPi) {
+      this.camera = null
       Pi.takePicture().then(picture => {
         this.setState({ image: picture.data.src })
       })
@@ -92,12 +93,10 @@ export default class App extends Component {
   }
 
   handleSensitivityChange(e) {
-    console.log(e.target.value)
     socket.emit('set-sensitivity', e.target.value)
   }
 
   handleThresholdChange(e) {
-    console.log(e.target.value)
     socket.emit('set-threshold', e.target.value)
   }
 
