@@ -29,13 +29,43 @@ class MotionDetector:
         self.camera.stop()
 
     def pix_diff(self, pixel_one, pixel_two):
-        pass
+        green_val_one = pixel_one[1]
+        green_val_two = pixel_two[1]
+
+        green_change = abs(green_val_one - green_val_two)
+
+        if green_change > THRESHOLD:
+            return True
+        else:
+            return False
         
     def check_for_motion(self, image_one, image_two):
-        pass
+        motion_detected = False
+        changed_pixels = []
+
+        for x in range(0, self.camera.width):
+            for y in range(0, self.camera.height):
+                pixel_one = image_one[x,y]
+                pixel_two = image_two[x,y]
+                # we want to check the change between each pixel, that's what we use our pix diff function for
+                pixel_changed = self.pix_diff(pixel_one, pixel_two)
+                # this is going to be true if we see a change large enough in the pixel color
+                changed_pixels.append(pixel_changed)
+
+        total_changed_pixels = sum(changed_pixels)
+        if total_changed_pixels > SENSITIVITY:
+            return total_changed_pixels, True 
+        else:
+            return total_changed_pixels, False
         
     def detector(self):
-        pass
+        image_one = self.camera.capture_image()
+        while RUN_DETECTOR:
+            image_two = self.camera.capture_image()
+            pixels_changed, motion_detected = self.check_for_motion(image_one, image_two)
+            image_one = image_two
+            self.cb(pixels_changed, motion_detected)
+        self.stop()
     
 
 def boot_motion(cb, exit_func):
