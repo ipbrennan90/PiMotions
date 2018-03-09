@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import io from 'socket.io-client'
-import { PiConditional, Camera } from '../../components'
-import { getMedia, snapshot } from '../../util'
+import { PiConditional, Camera, Motion } from '../../components'
+import { getMedia } from '../../util'
 import { Pi } from '../../services'
 import './style.css'
 
@@ -27,6 +27,7 @@ export default class App extends Component {
       takeOnPi: true,
       pics: [],
       motionDetection: false,
+      motionDetector: 'off',
       sensitivity: null,
       threshold: null,
       detectionData: {
@@ -42,8 +43,10 @@ export default class App extends Component {
     })
     socket.on('motion response', data => console.log(data))
     socket.on('motion-data', data => {
-      console.log(data)
-      this.setState({ detectionData: data })
+      if (this.state.motionDetector === 'on') {
+        console.log(data)
+        this.setState({ detectionData: data })
+      }
     })
     socket.on('sensitivity', data => {
       this.setState({ sensitivity: data.sensitivity })
@@ -79,7 +82,12 @@ export default class App extends Component {
         this.setState({ image: picture.data.src })
       })
     } else {
-      snapshot(this.camera, this)
+      this.camera
+        .snapshot()
+        .then(data => {
+          this.setState({ image: data })
+        })
+        .catch(console.error)
     }
   }
 
@@ -122,13 +130,16 @@ export default class App extends Component {
       takeOnPi,
       image,
       motionDetection,
+      motionDetector,
       sensitivity,
       threshold,
       detectionData,
     } = this.state
 
     const motionBackground = detectionData.motion ? 'green' : 'red'
-    const motionWidth = detectionData.pixChanged / 500 * 100
+    const motionChange =
+      detectionData.pixChanged > 500 ? 500 : detectionData.pixChanged
+    const motionWidth = motionChange / 500 * 100
     return (
       <div className="container">
         <header className="header">
@@ -145,65 +156,16 @@ export default class App extends Component {
         </button>
 
         {this.state.motionDetection && (
-          <div style={{ width: '100%', height: '300px' }}>
-            <button className="button trigger" onClick={this.turnOnMotion}>
-              TURN MOTION DETECTOR{' '}
-              {this.state.motionDetector === 'on' ? 'OFF' : 'ON'}
-            </button>
-            <div style={{ width: '100%', height: '50px' }}>
-              <div
-                style={{
-                  width: `${motionWidth}%`,
-                  height: '100%',
-                  backgroundColor: `${motionBackground}`,
-                }}
-              />
-            </div>
-            <label
-              style={{
-                width: '100%',
-                height: '20px',
-                marginTop: '20px',
-                marginBottom: '20px',
-                display: 'block',
-              }}
-              htmlFor="sensitivity"
-            >
-              sensitivity: {this.state.sensitivity}
-            </label>
-            <input
-              type="range"
-              onMouseUp={this.handleSensitivityChange}
-              id="sensitivity"
-              min="0"
-              defaultValue="20"
-              max="500"
-              step="1"
-              style={{ width: '100%' }}
-            />
-            <label
-              style={{
-                width: '100%',
-                height: '20px',
-                marginTop: '20px',
-                marginBottom: '20px',
-                display: 'block',
-              }}
-              htmlFor="threshold"
-            >
-              threshold: {this.state.threshold}
-            </label>
-            <input
-              type="range"
-              onMouseUp={this.handleThresholdChange}
-              id="threshold"
-              min="0"
-              defaultValue="10"
-              max="500"
-              step="1"
-              style={{ width: '100%' }}
-            />
-          </div>
+          <Motion
+            turnOnMotion={this.turnOnMotion}
+            motionDetector={motionDetector}
+            motionWidth={motionWidth}
+            motionBackground={motionBackground}
+            sensitivity={sensitivity}
+            handleSensitivityChange={this.handleSensitivityChange}
+            threshold={threshold}
+            handleThresholdChange={this.handleThresholdChange}
+          />
         )}
 
         <hr />

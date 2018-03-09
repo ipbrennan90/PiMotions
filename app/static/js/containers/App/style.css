@@ -67,11 +67,14 @@ hr {
   min-width: 15em;
   min-height: 60px;
   padding: 0.8em 1.4em;
-  padding-right: 4.7em;
   position: relative;
   text-transform: uppercase;
   transition: 0.2s;
   -webkit-font-smoothing: antialiased;
+}
+
+.trigger.icon {
+    padding-right: 4.7em;
 }
 
 .trigger.icon:before {

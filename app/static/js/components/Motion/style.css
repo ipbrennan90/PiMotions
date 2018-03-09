@@ -1,0 +1,57 @@
+.trigger {
+    border: none;
+    background: #fe5f55;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1em;
+    font-weight: 500;
+    letter-spacing: 2px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    min-width: 15em;
+    min-height: 60px;
+    padding: 0.8em 1.4em;
+    position: relative;
+    text-transform: uppercase;
+    transition: 0.2s;
+    -webkit-font-smoothing: antialiased;
+}
+
+.trigger:hover {
+    background: #ce4c44;
+}
+
+.trigger:active,
+.trigger:focus {
+    background: ce4c44;
+    outline: none;
+}
+
+.wrapper {
+    width: 100%;
+    height: 300px;
+    text-align: center;
+}
+
+.motionbar {
+    width: 100%;
+    height: 50px;
+    border: 1px solid black;
+}
+
+.motiondetected {
+    height: 100%;
+}
+
+.sliderlabel {
+    width: 100%;
+    height: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: block;
+}
+    
+.slider {
+    width: 100%;
+}

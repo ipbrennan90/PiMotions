@@ -53,7 +53,6 @@ class MotionDetector:
                 changed_pixels.append(pixel_changed)
 
         total_changed_pixels = sum(changed_pixels)
-        print(total_changed_pixels, SENSITIVITY)
         if total_changed_pixels > SENSITIVITY:
             return total_changed_pixels, True 
         else:

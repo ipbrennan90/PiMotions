@@ -1,67 +1,68 @@
-import React, { Component } from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
+import './style.css'
 
-class Motion extends Component {
-    render() {
-        return (
-            <div style={{ width: '100%', height: '300px' }}>
-            <button className="button" onClick={this.turnOnMotion}>
-            TURN MOTION DETECTOR{' '}
-            {this.state.motionDetector === 'on' ? 'OFF' : 'ON'}
-            </button>
-            <div style={{ width: '100%', height: '50px' }}>
-            <div
-            style={{
-                width: `${motionWidth}%`,
-                height: '100%',
-                backgroundColor: `${motionBackground}`,
-            }}
-            />
-            </div>
-            <label
-            style={{
-                width: '100%',
-                height: '20px',
-                marginTop: '20px',
-                marginBottom: '20px',
-                display: 'block',
-            }}
-            htmlFor="sensitivity"
-            >
-            sensitivity: {this.state.sensitivity}
-            </label>
-            <input
-            type="range"
-            onMouseUp={this.handleSensitivityChange}
-            id="sensitivity"
-            min="0"
-            defaultValue="20"
-            max="500"
-            step="1"
-            style={{ width: '100%' }}
-            />
-            <label
-            style={{
-                width: '100%',
-                height: '20px',
-                marginTop: '20px',
-                marginBottom: '20px',
-                display: 'block',
-            }}
-            htmlFor="threshold"
-            >
-            threshold: {this.state.threshold}
-            </label>
-            <input
-            type="range"
-            onMouseUp={this.handleThresholdChange}
-            id="threshold"
-            min="0"
-            defaultValue="10"
-            max="500"
-            step="1"
-            style={{ width: '100%' }}
-            />
-            </div>
-        )
-    }
+const Motion = ({
+  turnOnMotion,
+  motionDetector,
+  motionWidth,
+  motionBackground,
+  sensitivity,
+  handleSensitivityChange,
+  threshold,
+  handleThresholdChange,
+}) => (
+  <div className="wrapper">
+    <button className="button trigger" onClick={turnOnMotion}>
+      TURN MOTION DETECTOR {motionDetector === 'on' ? 'OFF' : 'ON'}
+    </button>
+    <div className="motionbar">
+      <div
+        className="motiondetected"
+        style={{
+          width: `${motionWidth}%`,
+          backgroundColor: `${motionBackground}`,
+        }}
+      />
+    </div>
+    <label className="sliderlabel" htmlFor="sensitivity">
+      sensitivity: {sensitivity}
+    </label>
+    <input
+      type="range"
+      onMouseUp={handleSensitivityChange}
+      id="sensitivity"
+      min="0"
+      defaultValue="20"
+      max="500"
+      step="1"
+      className="slider"
+    />
+    <label className="sliderlabel" htmlFor="threshold">
+      threshold: {threshold}
+    </label>
+    <input
+      type="range"
+      onMouseUp={handleThresholdChange}
+      id="threshold"
+      min="0"
+      defaultValue="10"
+      max="500"
+      step="1"
+      className="slider"
+    />
+  </div>
+)
+
+Motion.propTypes = {
+  turnOnMotion: PropTypes.func,
+  motionDetector: PropTypes.string,
+  motionWidth: PropTypes.number,
+  motionBackground: PropTypes.string,
+  sensitivity: PropTypes.number,
+  handleSensitivityChange: PropTypes.func,
+  threshold: PropTypes.number,
+  handleThresholdChange: PropTypes.func,
 }
+
+export default Motion
