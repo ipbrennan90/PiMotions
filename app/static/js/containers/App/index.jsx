@@ -140,13 +140,13 @@ export default class App extends Component {
           takeOnPi={takeOnPi}
           image={image}
         />
-        <button className="button trigger" onClick={this.handleClick}>
+        <button className="button trigger icon" onClick={this.handleClick}>
           Take Picture
         </button>
 
         {this.state.motionDetection && (
           <div style={{ width: '100%', height: '300px' }}>
-            <button className="button" onClick={this.turnOnMotion}>
+            <button className="button trigger" onClick={this.turnOnMotion}>
               TURN MOTION DETECTOR{' '}
               {this.state.motionDetector === 'on' ? 'OFF' : 'ON'}
             </button>
