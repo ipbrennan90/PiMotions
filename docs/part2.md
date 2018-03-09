@@ -430,18 +430,23 @@ def pix_diff(self, pixel_one, pixel_two):
 When we pass pixel_one and pixel_two to the `pix_diff` method, they are collections of RGB values. ```(R, G, B)```
 
 Remember our friend ```(10, 232, 218)``` from the camera.py section?
+
 ![Color Sample](./images/color.png)
 
-If we called that `pixel`, we could access the green value of the pixel by calling `pixel[1]`. The collection of values is 0-indexed, meaning that to get the first value, we'd use `pixel[0]`. To get the second value (the green value, the one we want), we use `pixel[1]`.
+Let's assign that to a variable called `pixel`.
 
 ```python
-        # R   G    B  
+ # index: 0   1    2
+ # color: R   G    B  
 pixel = (10, 232, 218)
 
 # access the green value
 pixel[1] = 232
 ```
-In `pix_diff`, we compare the green values of pixel_one and pixel_two. We use the absolute value function from python to make sure we always have a positive number.
+
+To access the green value of `pixel`, we can call `pixel[1]`. The collection of values is 0-indexed, meaning that to get the first value, we'd use `pixel[0]`. To get the second value (the green value, the one we want), we use `pixel[1]`.
+
+In the `pix_diff` method, we compare the green values of pixel_one and pixel_two. We use the absolute value function from python to make sure we always have a positive number.
 
 If the absolute value of the difference in green values is greater than our `THRESHOLD` value, then we return true, meaning we have determined that the two pixels are significantly different. Otherwise, we return false.
 
@@ -456,7 +461,7 @@ If the absolute value of the difference in green values is greater than our `THR
 
 With `pix_diff` completed, we should be done!
 
-Our final code for `MotionDetector` should now look like the following:
+Our final code for `MotionDetector` should now look like this:
 ```python
 class MotionDetector:
 
