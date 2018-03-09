@@ -32,15 +32,23 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 
 ### 2. Set up and configure your resin.io application
 
-1. Sign in to your resin.io account. If you don't have one, complete the [prework](prework.md) and then come back.
+1. We're going to need the resin-cli for steps later on, let's get that downloaded now by copying this command into your terminal:
 
-2. You'll see a prompt to create a new application.
+```
+npm install --global --production resin-cli
+```
+let that run while we move on through the next steps, we won't need it right away
+
+2.Sign in to your resin.io account. If you don't have one, complete the [prework](prework.md) and then come back.
+
+3. You'll see a prompt to create a new application.
     1. Set Device Type to "Raspberry Pi (v1 or Zero)"
     1. Give your application a name!
     1. Click "Create New Application"
 
-3. Click "Add device" to configure a resinOS image specifically for your application. Choose the recommend resinOS version, then toggle on "Development" under "Select Edition" and "Wifi + Ethernet" under "Network Connection".
-4. Enter the WiFi SSID and passphrase, and then click "Download".
+4. Click "Add device" to configure a resinOS image specifically for your application. Choose the recommend resinOS version, then toggle on "Development" under "Select Edition" and "Wifi + Ethernet" under "Network Connection".
+5. Click Advanced, then select the checkbox "Download configuration file only".
+6. Click the Download configuration file
 
 While the resinOS image is downloading, do the following:
 
@@ -71,20 +79,40 @@ Note: We don't need to build the Docker image every time we want to start our ap
 
 ### 4. Make a bootable SD card
 
-Once the resinOS image has downloaded, we'll use Etcher to flash the image onto our SD card. (You may be asked to grant admin permissions to Etcher.)
+We have already flashed a base resin OS image onto your SD cards but we will need to do some configuration to get our devices online and on our resin.io accounts.
 
-1. Open Etcher.
-2. Insert your SD card into your computer.
-3. Using Etcher, click "Select Image" and find the image you downloaded in step 3 above.
-4. Click "Flash!"
+1. Insert your microSD card  or microSD card adapter with your microSD card inside into your card reader, You should see your computer recognize it as "resin-boot"
+2. we want to find the location of our sd card, lets open a terminal window and type:
 
-Once Etcher finishes creating the bootable SD card, it will eject it for you.
+```
+df -h
+```
+this will return a list like this:
+![DF Example](./images/df-ex.png)
+you're looking for /Volumes/resin-boot on the right hand side, when you see that look at the left hand side and you should see a path like /dev/disk2s1, the real path is going to be everything but the trailing s1, jot that path down it should be something like dev/disk2 or dev/disk3
+
+3. You'll also need the path of your configuration file you downloaded earlier for the next step, this should be wherever you store your downloads, jot that down as well.
+
+4. Finally, to sync your sd card with your resin account enter the following into your terminal after adding your path to the sd card and path to your configuration file you jotted down previously
+
+```
+sudo resin config inject <path-to-your-config-file-here> --type raspberry-pi --drive <path-to-your-sd-card-here>
+```
+
+this should looks something like:
+
+```
+sudo resin config inject ~/Downloads/myapp.config.json --type raspberry-pi --drive /dev/disk2
+```
+
+5. when you see done here, eject your sd card safely
 
 ### 5. Set up your Pi
 
 1. Insert the SD card into your Pi.
 2. Plug your Pi into your computer or a power source using a micro USB cable. (We need power!)
 3. It make take a few minutes, but your Pi should appear on your [resin.io dashboard](https://dashboard.resin.io/apps).
+4. If it doesn't show up and your seeing the led blink 4 times repeatedly, there's something wrong with your wifi configuration, please reach out to one of the workshop leaders and we will resolve the issue with you.
 
 Once your Pi appears in your dashboard you are good to proceed!
 
