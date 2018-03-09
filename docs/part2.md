@@ -75,7 +75,7 @@ We can see an example of this communication by examining the code  excerpted bel
 
 When the web app emits the 'motion-start' event (line 1), the Pi will take certain actions, like calling the function `start_detector()` and `boot_motion()` (lines 10 and 11 in the example below).
 
-When the function `send_motion_event` (line 4) is called, the Pi emits a message of its own back to the web app (line 5), sending a ```"motion-detected"``` message with some data for the web app to display.
+When the function `send_motion_event` (line 4) is called, the Pi emits a message of its own back to the web app (line 5), sending a ```"motion-data"``` message with some data for the web app to display.
 
 **Code Example 2:**
 _from PiMotions/server/server.py_:
@@ -112,8 +112,7 @@ In `boot_motion`, we take the "send_motion_event" as one of the arguments (**Cod
 _from PiMotions/server/server.py_:
 ![Code Example 3](./images/ex-3.png)
 
-In motion_detector.py (excerpted below in **Code Example 4**), we can see that the first argument to `boot_motion` is a callback (cb). We use that callback in the initialization of our `MotionDetector` class (line 8). At some point (not yet implemented), we'll call that callback, which will then cause the Pi to emit the 'motion-detected' message to the web app with the data it needs (line 5 above in **Code Example 3**)
-
+In motion_detector.py (excerpted below in **Code Example 4**), we can see that the first argument to `boot_motion` is a callback (cb). We use that callback in the initialization of our `MotionDetector` class (line 8). At some point (not yet implemented), we'll call that callback, which will then cause the Pi to emit the 'motion-data' message to the web app with the data it needs (line 5 above in **Code Example 3**)
 
 **Code Example 4:**
 _from PiMotions/server/motion-detector.py_:
