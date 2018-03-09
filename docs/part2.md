@@ -328,51 +328,135 @@ Alright, let's actually implement `check_for_motion`. This is a pretty interesti
 
 Change your `check_for_motion` method so it looks like the following:
 
-![Code Example 6](./images/ex-6.png)
+```python
+def check_for_motion(self, image_one, image_two):
+    motion_detected = False
+    changed_pixels = []
+
+    for x in range(0, self.camera.width):
+        for y in range(0, self.camera.height):
+            pixel_one = image_one[x,y]
+            pixel_two = image_two[x,y]
+
+            pixel_changed = self.pix_diff(pixel_one, pixel_two)
+            changed_pixels.append(pixel_changed)
+
+    total_changed_pixels = sum(changed_pixels)
+
+    if total_changed_pixels > SENSITIVITY:
+        return total_changed_pixels, True
+    else:
+        return total_changed_pixels, False
+```
 
 So what's happening here?
 
-... #TODO [check for motion description] ... end #TODO
+Back up in the section where we discussed the code in the camera.py file, we talked about how our image is loaded so that it returns a pixel access object.
+
+So `image_one` and `image_two` in the method above really look like collections of pixels, and each pixel returns RGB values.
+
+That means can access a specific pixel in an image by providing x and y coordinates.
+
+Imagine that we had a picture that was 4 pixels wide and 4 pixels tall. It would look like this:
+
+![Code Example 6](./images/pic.png)
+
+In our `change_motion` method, we're examining the pictures pixel-by-pixel using two nested loops. We start by looking at the pixel in the first row, first column for image_one and compare that to the pixel in the same location in image_two. We compare them using the `pix_diff` method (not yet implemented).
+
+The `pix_diff` method will return either `True` or `False` depending on our determination of whether that pixel changed. If the pixel in the same location for image_one and image_two is significantly different, `pix_diff` will return `True`. If the pixels are not significantly different, we will return `False`.
+
+We append that value to the `changed_pixels` array, which at the end of our loops, will be an array of `True` and `False` values for each of the pixel locations in image_one and image_two.
+
+We proceed through the nested loops, comparing each of the pixels in the image_one to the pixels in the same location in image_two.
+
+```python
+def check_for_motion(self, image_one, image_two)
+    # ...
+    # x val = row, y val = column
+    for x in range(0, self.camera.width):
+        for y in range(0, self.camera.height):
+            # Check the same pixel location in each image
+            pixel_one = image_one[x,y]
+            pixel_two = image_two[x,y]
+            # Check the difference between each pixel (returns T or F)
+            pixel_changed = self.pix_diff(pixel_one, pixel_two)
+            # this is going to be true if we see a change large enough in the pixel color
+            changed_pixels.append(pixel_changed)
+            # ...
+```
+
+When we have traversed all of the pixels in image_one and image_two  row-by-row, we will have a big array of `True` and `False` values.
+
+We then will count all of the `True` values in the `changed_pixels` array with the following line:
+
+```python
+total_changed_pixels = sum(changed_pixels)
+```
+If the count of `True` values (which is the total number of significantly different pixels in our two images) exceeds our `SENSITIVITY`, `check_for_motion` will return `True`. Otherwise, it will return `False`.
+
+>Note: The `SENSITIVITY` value is set at the top of this file, and can be updated by the user on the front end.
+
+```python
+if total_changed_pixels > SENSITIVITY:
+    return total_changed_pixels, True
+else:
+    return total_changed_pixels, False
+```
+
+Whew! That was a lot. One more method to implement, and we'll be done!
 
 ### The `pix_diff` method
 
-Our final step is to build the `pix_diff` method, which is going to compare the green values in the corresponding pixels from each of the photos.
+Our final step is to build the `pix_diff` method, which is going to compare the values in pixels in the same location from each of the photos.
+
+`pix_diff` takes a pixel from image_one and a pixel from image_two, and then compares the green values between them.
 
 We use the green values (the G in RGB), because the green value is the most sensitive to change. We'll be able to detect motion just by comparing the difference in green values between pixels in the two images.
 
+The implementation of `pix_diff` looks like this:
+
 ```python
 def pix_diff(self, pixel_one, pixel_two):
-        green_val_one = pixel_one[1]
-        green_val_two = pixel_two[1]
+    green_val_one = pixel_one[1]
+    green_val_two = pixel_two[1]
 
-        green_change = abs(green_val_one - green_val_two)
+    green_change = abs(green_val_one - green_val_two)
 
-        if green_change > THRESHOLD:
-            return True
-        else:
-            return False
+    if green_change > THRESHOLD:
+        return True
+    else:
+        return False
 ```
+When we pass pixel_one and pixel_two to the `pix_diff` method, they are collections of RGB values. ```(R, G, B)```
 
-... #TODO pix_diff explanation
+Remember our friend ```(10, 232, 218)``` from the camera.py section?
+![Color Sample](./images/color.png)
 
-Green is 1 index of collection.
-green_val = img_pix[1]
+If we called that `pixel`, we could access the green value of the pixel by calling `pixel[1]`. The collection of values is 0-indexed, meaning that to get the first value, we'd use `pixel[0]`. To get the second value (the green value, the one we want), we use `pixel[1]`.
 
-want abs value of diff between two so it's always pos
-green change = abs value (green val 1 - green val 2)
-if it's over sensitivity, we say true. if not, false.
-... end #TODO
+```python
+        # R   G    B  
+pixel = (10, 232, 218)
+
+# access the green value
+pixel[1] = 232
+```
+In `pix_diff`, we compare the green values of pixel_one and pixel_two. We use the absolute value function from python to make sure we always have a positive number.
+
+If the absolute value of the difference in green values is greater than our `THRESHOLD` value, then we return true, meaning we have determined that the two pixels are significantly different. Otherwise, we return false.
+
+> Note: The `THRESHOLD` value is set at the top of this file, and can be updated by the user on the front end.
+
+```python
+  if green_change > THRESHOLD:
+      return True
+  else:
+      return False
+```
 
 With `pix_diff` completed, we should be done!
 
-Do a final resin sync to get our code changes deployed to the Pi:
-```
-resin sync --source ./server --destination /server
-```
-
-### The final code
-
-The final code for `MotionDetector` should look like the following:
+Our final code for `MotionDetector` should now look like the following:
 ```python
 class MotionDetector:
 
@@ -425,20 +509,27 @@ class MotionDetector:
         self.stop()
 ```
 
-Now, go look at the web app at `localhost:80` in your browser.
+Do a final resin sync to get our code changes deployed to the Pi:
+```
+resin sync --source ./server --destination /server
+```
+
+## Once that last sync completes, you're done! :tada:
+
+Congratulations! You now have a fully-functioning motion-detecting application that uses the camera on a Raspberry Pi to take the pictures, and a web front end for user controls.
+
+### Seeing the results of your work
+
+Go look at the web app at `localhost:80` in your browser.
 Make sure you have clicked "Turn Motion Detector On".
 
 Wave your hand in front of camera on the Pi. You should see the green bar jump in size. If you open developer tools, you should see data being continuously sent from the Pi to the front end.
 
 Try experimenting with adjusting the sensitivity levels and the threshold levels to see how that affects the behavior.
 
-## With that last sync, you're done! :tada:
+:tada::tada::tada::tada:
 
-Congratulations! You now have a fully-functioning motion-detecting application that uses the camera on a Raspberry Pi to take the pictures, and a web front end for user controls.
-
-Try experimenting with adjusting the sensitivity levels and the threshold levels.
-
->Quick Note: The completed code is on a branch called `motion-detection-complete`.
+>Quick Note: For your reference, the completed code is on a branch called `motion-detection-complete`.
 You can checkout that branch by running `git checkout motion-detection-complete` in your terminal.
 
 ### 3. What do I do now?
