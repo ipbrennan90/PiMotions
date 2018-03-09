@@ -8,7 +8,7 @@
 # Part 2: Motion Detection
 ## Introduction
 
-In Part 2 of this tutorial, you are going to write code to detect motion using the camera connected to your Pi.
+In Part 2 of this tutorial, we are going to write code to detect motion using the camera connected to your Pi.
 By the end of Part 2, you will have an application that will display whether or not motion was detected in front of the camera.
 
 ## Part 2 Steps
@@ -16,11 +16,11 @@ By the end of Part 2, you will have an application that will display whether or 
 - Resin sync
 - Rinse, repeat
 
-We'll mainly be working in the `server` directory, meaning that the code we write in Part 2 will be code that will run on our Pi, not on our front end. The front end code has been written for you, so once you get the Pi code working correctly, you'll have a fully functioning motion-detecting camera application, complete with front end controls for sensitivity!
+In this section, we'll be working in the `server` directory, meaning that the code we write in Part 2 will be code that will run on our Pi, not on our front end. The front end code has been written for you, so once you get the Pi code working correctly, you'll have a fully functioning motion-detecting camera application, complete with front end controls for sensitivity!
 
 ### 1. Let's dive into the code!
 
-We've set up a few small placeholder methods on this branch to get your started, but the code is not complete.
+We've set up a few small placeholder methods on this branch to get you started, but the code is not complete.
 
 **In this section, we'll take a quick tour through some of the code that has been written for you.**
 
@@ -55,7 +55,7 @@ If we wanted to, we could access a specific pixel in the `im_buffer` by providin
   y = 12
   print(image_buffer[x,y])
 ```
-could return something like ```(10, 232, 218)```, representing the R, G, and B values respectively of the pixel at that `x,y` location.
+`print(image_buffer[x,y])` could print out something like ```(10, 232, 218)```, representing the R, G, and B values respectively of the pixel at that `x,y` location.
 
 In case you were wondering, the color rgb(10, 232, 218) looks like this!
 
@@ -94,10 +94,10 @@ Open motion-detector.py in your text editor.
 
 _from PiMotions/server/motion-detector.py_:
 ```python
-# Threshold is the threshold of change in the color value of a pixel
+# Threshold is the threshold of difference between color values in two pixels, beyond which we consider the pixels to be significantly different
 THRESHOLD = 10
 
-# Sensitivity is the required number of pixels that are "changed" for motion to be detected
+# Sensitivity is the number of pixels required to be "changed" for motion to be detected
 SENSITIVITY = 20
 
 # A boolean to control when we run and stop the motion detector loop
@@ -147,10 +147,12 @@ What's going on here?
 `t = Thread(target=self.detector)` is creating a new thread called `t`. Setting the `target` of the thread to `self.detector` means that `self.detector` is the function that will get called when the thread is started (`t.start()`).
 
 > **What's a thread?**
+>
 > A thread is an ordered sequence of instructions for a computer. When we have more than one thread in a program, we can execute multiple sequences as if they were running at the same time.
 _There's a little more to it, but that's all you need to know for this workshop_.
 
 > **Why are we creating a new thread here?**
+>
 > Essentially, we want our motion detecting process to be able to run independently of what our server needs to do, and we don't want either process to block the other. This is an easy way for us to do that.
 
 So when `t.start()`, gets called, `self.detector` will get called. `self.detector` isn't yet implemented, but it's the first method we're going to write together in the next section.
@@ -200,9 +202,9 @@ class MotionDetector:
 ### The `detector` method
 The first method we're going to write is the `detector` method.
 
-`detector` is going to have a loop that runs based on the `RUN_DETECTOR` variable. `RUN_DETECTOR` is either `False` or `True` depending on whether the user turns the motion detector on or off in the front end.
+`detector` is going to have a loop that runs based on the `RUN_DETECTOR` variable. `RUN_DETECTOR` is either `True` or `False` depending on whether the user turns the motion detector on or off in the front end.
 
-When `RUN_DETECTOR` is true, we want to continuously check for motion. We want to send motion data value to the front end. The data will be the number of pixels changed, and whether motion was detected.
+When `RUN_DETECTOR` is true, we want to continuously check for motion. We want to send motion data to the front end. The data will be the number of pixels changed and whether motion was detected.
 
 To start, let's hardcode some values and see how this works.
 
@@ -220,16 +222,17 @@ def detector(self):
         time.sleep(1)
     self.stop()
 ```
-Here, we are hardcoding a pixel change value of 30, and we're saying motion_detected is always true. We're doing this inside of an loop with `while RUN_DETECTOR`, so once we deploy this code to the Pi and we press "Turn Motion Detector On", the Pi should consistently send `{'pixChanged': 30, 'motion': true}` to the front end every second. `time.sleep(1)` makes the loop wait a second before sending emitting the next event.
+Here, we are hardcoding a pixel change value of 30, and we're saying motion_detected is always true. We're doing this inside of an loop with `while RUN_DETECTOR`, so once we deploy this code to the Pi and we press "Turn Motion Detector On", the Pi should consistently send `{'pixChanged': 30, 'motion': true}` to the front end every second. `time.sleep(1)` makes the loop wait a second before emitting the next event.
 
-Now, let's push our code to our Pi using the resin cli. To do this, copy and paste this command into your terminal.
+Now, let's push our code to our Pi using the resin cli we installed in Part 1 of the workshop. To do this, copy and paste this command into your terminal.
 ```
 resin sync --source ./server --destination /server
 ```
 This sync may take a few minutes, but you can can watch the progress in your resin.io device dashboard.
 
-Once sync completes, go to web app at `localhost:80` in your browser.
-Click the button to "Turn Motion Detector On". You should see events start to come in. You can watch the events in your developer console. (In Chrome, you can open the console by going to the Chrome menu in the top right of your browser window (the three dots) > More Tools > Developer Tools).
+Once the sync completes, go to the web app at `localhost:80` in your browser.
+
+Click the button to "Turn Motion Detector On". You can watch the data come in from the Pi by opening your browser's developer console. (In Chrome, you can open the console by going to the Chrome menu in the top right of your browser window (the three dots) > More Tools > Developer Tools).
 
 You should see a green box appear on the screen. The green means we've detected motion, and the size of the box represents the number of pixels changed (at this point, 30).
 
@@ -237,7 +240,7 @@ You should see a green box appear on the screen. The green means we've detected 
 
 Now, let's make the loop actually do what we want it to do.
 
-Our goal for the `detector` method is that we want it to take two images and check the images against each other. If the images are significantly different, we know we've detected motion. Every loop, we want to send the comparison data to the front end, so that the front end can display a consistent stream of information to the user about whether or not motion was detected.
+Our goal for the `detector` method is for it to take two images and check the images against each other. If the images are significantly different, we know we've detected motion. Every loop, we want to send the comparison data to the front end, so that the front end can display a consistent stream of information to the user about whether or not motion was detected.
 
 Change your `detector` method so it looks like this:
 
@@ -271,7 +274,7 @@ Based on our code in `detector` (copied below), We know `check_for_motion` needs
 ```python
 pixels_changed, motion_detected = self.check_for_motion(image_one, image_two)
 ```
-The objective for `check_for_motion` will be to have it compare the two images, and then return two values for the number of pixels changed, and whether or not motion was detected.
+The objective for `check_for_motion` will be to have it compare the two images, and then return two values for the number of pixels changed and whether or not motion was detected.
 
 To wire things up, let's again use some fake data.
 
@@ -385,7 +388,7 @@ changed_pixels = [True, False, True, True, False ...]
 We proceed through the nested loops, comparing each of the pixels in  image_one to the pixels in the same location in image_two.
 
 ```python
-def check_for_motion(self, image_one, image_two)
+# excerpt of method
     # ...
     # x val is the row, y val is the column
     for x in range(0, self.camera.width):
@@ -444,7 +447,7 @@ def pix_diff(self, pixel_one, pixel_two):
     else:
         return False
 ```
-When we pass pixel_one and pixel_two to the `pix_diff` method, they are collections of RGB values. ```(R, G, B)```
+When we pass pixel_one and pixel_two to the `pix_diff` method, they are each collections of RGB values. ```(R, G, B)```
 
 Remember our friend ```(10, 232, 218)``` from the camera.py section?
 
@@ -456,12 +459,13 @@ Let's assign that to a variable called `pixel`.
  # index: 0   1    2
  # color: R   G    B  
 pixel = (10, 232, 218)
+```
+To access the green value of `pixel`, we can call `pixel[1]`. The collection of values is 0-indexed, meaning that to get the first value, we'd use `pixel[0]`. To get the second value (the green value, the one we want), we use `pixel[1]`.
 
-# access the green value
+```python
+# access the green value of pixel
 pixel[1] = 232
 ```
-
-To access the green value of `pixel`, we can call `pixel[1]`. The collection of values is 0-indexed, meaning that to get the first value, we'd use `pixel[0]`. To get the second value (the green value, the one we want), we use `pixel[1]`.
 
 In the `pix_diff` method, we compare the green values of pixel_one and pixel_two. We use the absolute value function from python to make sure we always have a positive number.
 
