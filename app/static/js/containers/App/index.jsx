@@ -78,7 +78,6 @@ export default class App extends Component {
 
   handleClick() {
     if (this.state.takeOnPi) {
-      this.camera = null
       Pi.takePicture().then(picture => {
         this.setState({ image: picture.data.src })
       })
