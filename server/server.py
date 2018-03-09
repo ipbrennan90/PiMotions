@@ -30,7 +30,7 @@ def take_picture():
 def check_motion():
     @copy_current_request_context
     def send_motion_event(pixChanged, motion_detected):
-        emit('motion-detected', {'pixChanged': pixChanged, 'motion': motion_detected})
+        emit('motion-data', {'pixChanged': pixChanged, 'motion': motion_detected})
 
     @copy_current_request_context
     def motion_exit(e):

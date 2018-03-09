@@ -41,7 +41,7 @@ export default class App extends Component {
       this.setState({ motionDetection: true })
     })
     socket.on('motion response', data => console.log(data))
-    socket.on('motion-detected', data => {
+    socket.on('motion-data', data => {
       console.log(data)
       this.setState({ detectionData: data })
     })
