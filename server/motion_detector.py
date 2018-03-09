@@ -1,4 +1,4 @@
-from threading import Thread, active_count
+from threading import Thread
 import time
 from camera import Camera
 import math
