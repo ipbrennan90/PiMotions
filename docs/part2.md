@@ -20,12 +20,6 @@ We'll mainly be working in the `server` directory, meaning that the code we writ
 
 ### 1. Let's dive into the code!
 
-So now we are going to push this code to the Pi.
-in order to do that, we need resin cli.
-
-npm install --global --production resin-cli
-
-
 We've set up a few small placeholder methods on this branch to get your started, but the code is not complete.
 
 **In this section, we'll take a quick tour through some of the code that has been written for you.**
@@ -96,7 +90,7 @@ All of our code is going to be written in motion-detector.py. When we get the co
 Open motion-detector.py in your text editor.
 
 #### **A few things to notice before we start writing code:**
-##### 1) We have values for threshold, sensitivity, and whether or not our motion detector is running at the top of the file.
+##### 1) Firstly, we have values for threshold, sensitivity, and whether or not our motion detector is running at the top of the file.
 
 _from PiMotions/server/motion-detector.py_:
 ```python
@@ -110,9 +104,11 @@ SENSITIVITY = 20
 RUN_DETECTOR = True
 ```
 
-##### 2) Remember ```boot_motion(send_motion_event, motion_exit)``` from line 11, **Code Example 2**? ```boot_motion``` is the function we call when our Pi gets a message from the web app to 'motion-start'.
+##### 2) Secondly, remember ```boot_motion(send_motion_event, motion_exit)``` from **Code Example 2**?
 
-In `boot_motion`, we take the "send_motion_event" as one of the arguments (**Code Example 2**, line 4, and also copied below).
+`boot_motion` is the function we call when our Pi gets a message from the web app to 'motion-start'.
+
+In `boot_motion`, we take "send_motion_event" as one of the arguments (copied below for convenience).
 
 **Code Example 3:**
 _from PiMotions/server/server.py_:
@@ -126,7 +122,7 @@ _from PiMotions/server/motion-detector.py_:
 
 In addition to ```boot_motion```, we have some other utility functions at the bottom of the motion-detector.py file written for us. We don't need to edit these, but you can take a quick look to see what's there.
 
-##### 3) Inside of the motion detector class, the ```start``` method has also been written for us.
+##### 3) Finally, inside of the motion detector class, the ```start``` method has also been written for us.
 
 **Code Example 5:**
 _from PiMotions/server/motion-detector.py_:
@@ -134,14 +130,19 @@ _from PiMotions/server/motion-detector.py_:
 
 The `start` method of our `MotionDetector` class is worth examining, because it's what kicks off all of the motion detection functionality. We call `start()` on an instance of `MotionDetector` in the `boot_motion` method (**Code Example 4**, line 9).
 
-In the `start` method, we first start the camera (line 8), which is the instance of the camera class we looked at in **Code Example 1**. Then, we have these lines:
+In the `start` method, we first start the camera (line 8 in **Code Example 5** above).
 
+The camera is an instance of the Camera class we looked at in **Code Example 1**.
+
+Then, we have these lines:
 ```python
+def start
+    # ...
     t = Thread(target=self.detector)
-    # ... omitted for clarity
+    # ...
     t.start()
 ```
-What are we doing here?
+What's going on here?
 
 `t = Thread(target=self.detector)` is creating a new thread called `t`. Setting the `target` of the thread to `self.detector` means that `self.detector` is the function that will get called when the thread is started (`t.start()`).
 
@@ -155,11 +156,12 @@ _There's a little more to it, but that's all you need to know for this workshop_
 So when `t.start()`, gets called, `self.detector` will get called. `self.detector` isn't yet implemented, but it's the first method we're going to write together in the next section.
 
 > **If you need a quick recap, the steps we've covered so far to start the motion-detecting process look like this:**
-> 1) Front end tells the Pi to 'motion-start' because a user clicked the "Turn Motion Detection On" button.
-> 2) The Pi calls `start_detector` and `boot_motion` methods.
-> 3) `start_detector` sets our global variable `RUN_DETECTOR` to true.
-> 4) `boot_motion` creates a new instance of the `MotionDetector` class, and then calls `start` on that instance.
-> 5) The `start` method kicks off a new Thread, which calls `self.detector`.
+> 1) A user clicks the "Turn Motion Detection On" button.
+> 2) The front end sends the Pi a message to 'motion-start'.
+> 3) The Pi calls `start_detector` and `boot_motion`.
+> 4) `start_detector` sets our global variable `RUN_DETECTOR` to true.
+> 5) `boot_motion` creates a new instance of the `MotionDetector` class, and then calls `start` on that instance.
+> 6) The `start` method kicks off a new thread, which calls `self.detector`.
 
 
 #### Okay, we're ready to write some code!
@@ -221,7 +223,7 @@ def detector(self):
 Here, we are hardcoding a pixel change value of 30, and we're saying motion_detected is always true. We're doing this inside of an loop with `while RUN_DETECTOR`, so once we deploy this code to the Pi and we press "Turn Motion Detector On", the Pi should consistently send `{'pixChanged': 30, 'motion': true}` to the front end every second. `time.sleep(1)` makes the loop wait a second before sending emitting the next event.
 
 Now, let's push our code to our Pi using the resin cli. To do this, copy and paste this command into your terminal.
-```python
+```
 resin sync --source ./server --destination /server
 ```
 This sync may take a few minutes, but you can can watch the progress in your resin.io device dashboard.
@@ -229,7 +231,7 @@ This sync may take a few minutes, but you can can watch the progress in your res
 Once sync completes, go to web app at `localhost:80` in your browser.
 Click the button to "Turn Motion Detector On". You should see events start to come in. You can watch the events in your developer console. (In Chrome, you can open the console by going to the Chrome menu in the top right of your browser window (the three dots) > More Tools > Developer Tools).
 
-You should see a green box appear on the screen. The green means we've detected motion, and the size represents the number of pixels changed (at this point, 30).
+You should see a green box appear on the screen. The green means we've detected motion, and the size of the box represents the number of pixels changed (at this point, 30).
 
 ![Code Example 5](./images/motion-sent.png)
 
@@ -282,7 +284,7 @@ def check_for_motion(self, image_one, image_two):
     return pixels_changed, motion_detected
 ```
 Then, run your resin sync command in the terminal again:
-```python
+```
 resin sync --source ./server --destination /server
 ```
 Once the sync is complete, we can go back to the browser at `localhost:80` (you may need to do a hard refresh). We should see the same behavior as we saw last time, because we are using the same fake values.
@@ -364,7 +366,7 @@ if it's over sensitivity, we say true. if not, false.
 With `pix_diff` completed, we should be done!
 
 Do a final resin sync to get our code changes deployed to the Pi:
-```python
+```
 resin sync --source ./server --destination /server
 ```
 
