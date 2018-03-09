@@ -1,4 +1,4 @@
-from threading import Thread
+from threading import Thread, active_count
 import time
 from camera import Camera
 import math
@@ -56,21 +56,13 @@ def start_detector():
     RUN_DETECTOR = True
     return
 
-def restart_motion():
-    if RUN_DETECTOR:
-        stop_detector()
-        time.sleep(2)
-        start_detector()
-
 def set_sensitivity(sensitivity):
     global SENSITIVITY
-    SENSITIVITY = sensitivity
-    restart_motion()
+    SENSITIVITY = int(sensitivity)
 
 def set_threshold(threshold):
     global THRESHOLD
-    THRESHOLD = threshold
-    restart_motion()
+    THRESHOLD = int(threshold)
 
 def get_threshold():
     return THRESHOLD
