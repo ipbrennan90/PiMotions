@@ -289,7 +289,7 @@ resin sync --source ./server --destination /server
 ```
 Once the sync is complete, we can go back to the browser at `localhost:80` (you may need to do a hard refresh). We should see the same behavior as we saw last time, because we are using the same fake values.
 
-So right now our code should look like this:
+Right now, our code should look like this:
 ```python
 class MotionDetector:
 
@@ -353,45 +353,62 @@ So what's happening here?
 
 Back up in the section where we discussed the code in the camera.py file, we talked about how our image is loaded so that it returns a pixel access object.
 
-So `image_one` and `image_two` in the method above really look like collections of pixels, and each pixel returns RGB values.
+So `image_one` and `image_two` in the method are just collections of pixels (no surprise there), and each pixel has RGB values.
 
-That means can access a specific pixel in an image by providing x and y coordinates.
+That means we can access a specific pixel in an image by providing x and y coordinates.
 
 Imagine that we had a picture that was 4 pixels wide and 4 pixels tall. It would look like this:
 
 ![Code Example 6](./images/pic.png)
 
-In our `change_motion` method, we're examining the pictures pixel-by-pixel using two nested loops. We start by looking at the pixel in the first row, first column for image_one and compare that to the pixel in the same location in image_two. We compare them using the `pix_diff` method (not yet implemented).
+To access the pixel in the first row, first column, we could write
+```python
+x_coord = 0
+y_coord = 0
+pic[x_coord, y_coord] # pic[0,0]
+```
+In our `change_motion` method, we're examining the pictures pixel-by-pixel by using two nested loops.
 
-The `pix_diff` method will return either `True` or `False` depending on our determination of whether that pixel changed. If the pixel in the same location for image_one and image_two is significantly different, `pix_diff` will return `True`. If the pixels are not significantly different, we will return `False`.
+We start by looking at the pixel at [0,0] for image_one and compare that to the pixel in the same location in image_two.
+
+We compare the pixels using the `pix_diff` method (not yet implemented).
+
+The `pix_diff` method will return either `True` or `False`. If the pixels at [0,0] for image_one and image_two are significantly different, `pix_diff` will return `True`. If the pixels are not significantly different, we will return `False`.
 
 We append that value to the `changed_pixels` array, which at the end of our loops, will be an array of `True` and `False` values for each of the pixel locations in image_one and image_two.
 
-We proceed through the nested loops, comparing each of the pixels in the image_one to the pixels in the same location in image_two.
+```python
+# eventually, our changed_pixels array will look like this
+changed_pixels = [True, False, True, True, False ...]
+```
+
+We proceed through the nested loops, comparing each of the pixels in  image_one to the pixels in the same location in image_two.
 
 ```python
 def check_for_motion(self, image_one, image_two)
     # ...
-    # x val = row, y val = column
+    # x val is the row, y val is the column
     for x in range(0, self.camera.width):
         for y in range(0, self.camera.height):
             # Check the same pixel location in each image
             pixel_one = image_one[x,y]
             pixel_two = image_two[x,y]
+
             # Check the difference between each pixel (returns T or F)
             pixel_changed = self.pix_diff(pixel_one, pixel_two)
-            # this is going to be true if we see a change large enough in the pixel color
+
             changed_pixels.append(pixel_changed)
             # ...
 ```
 
-When we have traversed all of the pixels in image_one and image_two  row-by-row, we will have a big array of `True` and `False` values.
+When we have traversed all of the pixels in image_one and image_two  row-by-row, we will have a big array of `True` and `False` values stored in the `changed_pixels` array.
 
 We then will count all of the `True` values in the `changed_pixels` array with the following line:
 
 ```python
 total_changed_pixels = sum(changed_pixels)
 ```
+
 If the count of `True` values (which is the total number of significantly different pixels in our two images) exceeds our `SENSITIVITY`, `check_for_motion` will return `True`. Otherwise, it will return `False`.
 
 >Note: The `SENSITIVITY` value is set at the top of this file, and can be updated by the user on the front end.
