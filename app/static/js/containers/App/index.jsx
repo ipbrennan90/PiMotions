@@ -116,30 +116,6 @@ export default class App extends Component {
     })
   }
 
-  renderPicStream(pics) {
-    return pics.map(pic => {
-      if (!pic.entropy) return
-      return (
-        <span>
-          <img src={pic.img_diff} />
-          <p>TOTAL ENTROPY: {pic.entropy.total_entropy.entropy}</p>
-          <p>
-            R ENTROPY: {pic.entropy.r_entropy.entropy} LENGTH:{' '}
-            {pic.entropy.r_entropy.length}
-          </p>
-          <p>
-            G ENTROPY: {pic.entropy.g_entropy.entropy} LENGTH:{' '}
-            {pic.entropy.g_entropy.length}
-          </p>
-          <p>
-            B ENTROPY: {pic.entropy.b_entropy.entropy} LENGTH:{' '}
-            {pic.entropy.b_entropy.length}
-          </p>
-        </span>
-      )
-    })
-  }
-
   render() {
     const {
       isPi,
@@ -148,10 +124,11 @@ export default class App extends Component {
       motionDetection,
       sensitivity,
       threshold,
+      detectionData,
     } = this.state
 
-    const motionBackground = this.state.detectionData.motion ? 'green' : 'red'
-
+    const motionBackground = detectionData.motion ? 'green' : 'red'
+    const motionWidth = detectionData.pixChanged / 500 * 100
     return (
       <div className="container">
         <header className="header">
@@ -176,7 +153,7 @@ export default class App extends Component {
             <div style={{ width: '100%', height: '50px' }}>
               <div
                 style={{
-                  width: `${this.state.detectionData.pixChanged / 256 * 100}%`,
+                  width: `${motionWidth}%`,
                   height: '100%',
                   backgroundColor: `${motionBackground}`,
                 }}

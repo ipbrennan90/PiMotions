@@ -28,15 +28,14 @@ class MotionDetector:
     def stop(self):
         self.camera.stop()
 
-    def pix_diff(self, x,y, im_buff_1, im_buff_2):
+    def pix_diff(self, pixel_one, pixel_two):
         pass
         
-    def check_for_motion(self, im_buffer_1, im_buffer_2):
+    def check_for_motion(self, image_one, image_two):
         pass
         
     def detector(self):
         pass
-
     
 
 def boot_motion(cb, exit_func):
