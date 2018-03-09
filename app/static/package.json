@@ -1,5 +1,5 @@
 {
-  "name": "take-my-picture",
+  "name": "PiMotions",
   "version": "1.0.0",
   "description": "simple web app to take and display raspberry pi camera pictures",
   "main": "index.jsx",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ipbrennan90/take-my-picture.git"
+    "url": "git+https://github.com/ipbrennan90/PiMotions.git"
   },
   "keywords": [
     "picture",
@@ -33,9 +33,9 @@
   "author": "Ian Brennan",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ipbrennan90/take-my-picture/issues"
+    "url": "https://github.com/ipbrennan90/PiMotions/issues"
   },
-  "homepage": "https://github.com/ipbrennan90/take-my-picture#readme",
+  "homepage": "https://github.com/ipbrennan90/PiMotions#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
