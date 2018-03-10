@@ -17,7 +17,7 @@ By the end of Part 1, you will have the web application communicating with the P
 - Fork and clone this repo to your own machine
 - Set up a resin.io application
 - Get the application running locally
-- Configure your Pi with a resinOS image
+- Configure your Pi
 - Get the application talking to the Pi!
 
 Since this tutorial is focused on working with a Pi, we've written the code for the web application for you. That way you don't have to fixate on debugging code when you want to learn about a Pi. If you want more of a challenge, you are welcome to modify or extend the existing code in any way you'd like.
@@ -32,7 +32,7 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 
 ### 2. Set up and configure your resin.io application
 
-1. We're going to need the resin-cli for steps later on, let's get that downloaded now by copying this command into your terminal:
+1. We're going to need the resin-cli for steps later on, so let's get that downloaded now by copying this command into your terminal:
 
 ```
 npm install --global --production resin-cli
@@ -48,9 +48,7 @@ let that run while we move on through the next steps, we won't need it right awa
 
 4. Click "Add device" to configure a resinOS image specifically for your application. Choose the recommend resinOS version, then toggle on "Development" under "Select Edition" and "Wifi + Ethernet" under "Network Connection".
 5. Click Advanced, then select the checkbox "Download configuration file only".
-6. Click the Download configuration file
-
-While the resinOS image is downloading, do the following:
+6. Download the configuration file.
 
 5. From your resin.io dashboard, set device configuration variables by clicking on "Fleet Configuration". Add the following two device config variables:
 - NAME: `RESIN_HOST_CONFIG_gpu_mem` VALUE: `128`
@@ -59,8 +57,6 @@ While the resinOS image is downloading, do the following:
 These variables make sure that the camera works on the Pi.
 
 6. Add a resin.io remote repo by copying the **git remote add** command in the top right of your dashboard, and running it in the terminal.
-
-While you're waiting for the resinOS image download to finish, you can move on to the next step, which is to get the app running locally.
 
 ### 3. Get the app running locally
 
@@ -75,37 +71,61 @@ Once it finishes, your app will be running, so you can navigate to `localhost:80
 
 Note: We don't need to build the Docker image every time we want to start our app. If you want to start the app without rebuilding the image, you can run `npm run start`, which runs `docker-compose up` for us.
 
-`npm run docker-build` may take a few minutes. If your resinOS image has downloaded (from step 2), while you are waiting on the app to build, you can move on to the next step.
+`npm run docker-build` may take a few minutes. While you are waiting on the app to build, you can move on to the next step.
 
 ### 4. Make a bootable SD card
 
-We have already flashed a base resin OS image onto your SD cards but we will need to do some configuration to get our devices online and on our resin.io accounts.
+We have already flashed a base resinOS image onto your SD cards, but we will need to do some configuration to get our devices online and on our resin.io accounts.
 
-1. Insert your microSD card  or microSD card adapter with your microSD card inside into your card reader, You should see your computer recognize it as "resin-boot"
-2. we want to find the location of our sd card, lets open a terminal window and type:
+1. Insert your microSD card or microSD card adapter with your microSD card inside into your card reader. You should see your computer recognize it as "resin-boot".
+2. We want to find the location of our sd card, so let's open a terminal window and type:
 
 ```
 df -h
 ```
 this will return a list like this:
 ![DF Example](./images/df-ex.png)
-you're looking for /Volumes/resin-boot on the right hand side, when you see that look at the left hand side and you should see a path like /dev/disk2s1, the real path is going to be everything but the trailing s1, jot that path down it should be something like dev/disk2 or dev/disk3
 
-3. You'll also need the path of your configuration file you downloaded earlier for the next step, this should be wherever you store your downloads, jot that down as well.
+You're looking for /Volumes/resin-boot on the right hand side. When you see that, look at the left hand side of the output and you should see a path like /dev/disk2s1. The real path is going to be everything but the trailing s1 (so in our example, it would be `/dev/disk2`). Jot that path down -- you're going to need it in a minute.
 
-4. Finally, to sync your sd card with your resin account enter the following into your terminal after adding your path to the sd card and path to your configuration file you jotted down previously
+3. You'll also need the path of your configuration file you downloaded earlier for the next step. This should be wherever you store your downloads. An example would be `~/Downloads/myapp.config.json`
+
+4. Finally, to sync your sd card with your resin account, enter the following into your terminal after replacing the placeholder values with your values for the SD card location and config file path.
 
 ```
 sudo resin config inject <path-to-your-config-file-here> --type raspberry-pi --drive <path-to-your-sd-card-here>
 ```
 
-this should looks something like:
+This should looks something like:
 
 ```
 sudo resin config inject ~/Downloads/myapp.config.json --type raspberry-pi --drive /dev/disk2
 ```
 
-5. when you see done here, eject your sd card safely
+5. When you see "Done" here, open "resin-boot". You should see a directory inside called "system-connections". Inside "system-connections" you'll see a file either called "sxsw" or "resin-wifi". Open this file in a text editor (on  a Mac you may need to right-click and use the "Open With" option).
+
+The "resin-wifi"/"sxsw" file has one section we need to delete. It is the section labeled "[wifi-security]". Delete that whole block of text. The updated (correct) version should look like this:
+
+```
+[connection]
+id=resin-wifi-01
+type=wifi
+
+[wifi]
+hidden=true
+mode=infrastructure
+ssid=legacy
+
+[ipv4]
+method=auto
+
+[ipv6]
+addr-gen-mode=stable-privacy
+method=auto
+```
+Save your changes to this file. 
+
+6. Then, eject your SD card safely.
 
 ### 5. Set up your Pi
 
