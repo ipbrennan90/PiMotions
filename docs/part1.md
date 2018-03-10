@@ -16,9 +16,8 @@ By the end of Part 1, you will have the web application communicating with the P
 ## Part 1 Steps
 - Fork and clone this repo to your own machine
 - Set up a resin.io application
-- Get the application running locally
 - Configure your Pi
-- Get the application talking to the Pi!
+- Get the web application talking to the Pi!
 
 Since this tutorial is focused on working with a Pi, we've written the code for the web application for you. That way you don't have to fixate on debugging code when you want to learn about a Pi. If you want more of a challenge, you are welcome to modify or extend the existing code in any way you'd like.
 
@@ -58,22 +57,7 @@ These variables make sure that the camera works on the Pi.
 
 6. Add a resin.io remote repo by copying the **git remote add** command in the top right of your dashboard, and running it in the terminal.
 
-### 3. Get the app running locally
-
-1. Make sure you are in the `app/static` directory.
-2. Make sure Docker is running
-3. Run `npm run docker-build`
-
-This will build a Docker image based on our Dockerfile and start our containers. You can follow the process by watching your terminal output.
-Once it finishes, your app will be running, so you can navigate to `localhost:80` in your browser to check it out.
-
-3. Navigate to `localhost:80` in your browser. Click on "Webcam" under "Image Source" and then click "Take a Picture".
-
-Note: We don't need to build the Docker image every time we want to start our app. If you want to start the app without rebuilding the image, you can run `npm run start`, which runs `docker-compose up` for us.
-
-`npm run docker-build` may take a few minutes. While you are waiting on the app to build, you can move on to the next step.
-
-### 4. Make a bootable SD card
+### 3. Make a bootable SD card
 
 We have already flashed a base resinOS image onto your SD cards, but we will need to do some configuration to get our devices online and on our resin.io accounts.
 
@@ -127,7 +111,7 @@ Save your changes to this file.
 
 6. Then, eject your SD card safely.
 
-### 5. Set up your Pi
+### 4. Set up your Pi
 
 1. Insert the SD card into your Pi.
 2. Plug your Pi into your computer or a power source using a micro USB cable. (We need power!)
@@ -136,7 +120,7 @@ Save your changes to this file.
 
 Once your Pi appears in your dashboard you are good to proceed!
 
-### 6. Deploy code to your Pi
+### 5. Deploy code to your Pi
 
 1. Navigate to the root of your project (the `PiMotions/` directory). If you're in the `app/static` directory, run `cd ..; cd ..` to get to `PiMotions/`.
 
@@ -149,14 +133,9 @@ Note: this may ask you to add this host to your list of allowed hosts. Type 'yes
 
 When you see a unicorn appear in your terminal, your push was successful!
 
-Visit your device's Resin page to monitor download progress. This will take ~15 minutes over wifi. While this takes place, continue with setup below!
+Visit your device's Resin page to monitor download progress. This will take ~15 minutes over wifi.
 
-### 7. Get the web app and the Pi talking to each other
-
-We have an web app running locally that can take a picture using our computer's webcam.
-The next step is to get the web app and the Pi talking to each other, so that we can use the Pi's camera to take a picture.
-
-Right now, the "R Pi" button under "Image Source" doesn't do anything. We're about to fix that.
+### 6. Get the web app and the Pi talking to each other
 
 1. Enable a public url for your device. Go into "Actions" on your resin.io device dashboard and click "Enable All Public Device URLs".
 Copy the public url and paste it into `app/static/.env` as the value for `RASPI_URL`.
@@ -166,11 +145,19 @@ RASPI_URL=<your public url here>
 ```
 2. Navigate to `app/static` directory by running `cd app/static` in your terminal.
 
-3. Run `npm run docker-down`, and then run `npm run docker-build`.
+3. Run `npm run docker-build`
 
-4. Check your device's Resin page -- if the download is complete, proceed!
+This will build a Docker image based on our Dockerfile and start our containers. You can follow the process by watching your terminal output. Once it finishes, your app will be running, so you can navigate to `localhost:80` in your browser to check it out.
 
-5. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
+4. Click on "Webcam" under "Image Source" and then click "Take a Picture".
+
+Note: We don't need to build the Docker image every time we want to start our app. If you want to start the app without rebuilding the image, you can run `npm run start`, which runs `docker-compose up` for us.
+
+`npm run docker-build` may take a few minutes.
+
+5. Check your device's resin.io page -- if the download is complete, you can also test out your "R Pi" button!
+
+6. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
 
 :tada::tada::tada:
 
