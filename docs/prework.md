@@ -39,15 +39,13 @@ Click the link above, and then click "Get Docker".
 Docker may ask you to restart your computer or "Allow the application to make changes".
 Docker may also ask for "privileged access".
 
-3. [Download Etcher](https://etcher.io/)
+If you have an older Windows version, you may need to install Docker Toolbox. Please follow [the install steps here](https://docs.docker.com/toolbox/toolbox_install_windows/).
 
-After the download completes, you don't need to take any further action with Etcher at this time.
-
-4. [Download NodeJS](https://nodejs.org/en/)
+3. [Download NodeJS](https://nodejs.org/en/)
 
 Download the option recommended for most users.
 
-5. (Optional) Download a text editor
+4. (Optional) Download a text editor
 
 If you don't already have a text editor downloaded, you'll want one for the workshop. We recommend [Atom](https://atom.io/) or [Sublime Text](https://www.sublimetext.com/). (Either will do).
 
@@ -128,15 +126,11 @@ Download the right option for your computer, and then follow the installation pr
 
 Note: Docker may ask you to restart your computer or "Allow the application to make changes".
 
-2. [Download Etcher](https://etcher.io/)
-
-After the download completes, you don't need to take any further action with Etcher at this time.
-
-3. [Download NodeJS](https://nodejs.org/en/)
+2. [Download NodeJS](https://nodejs.org/en/)
 
 Download the option recommended for most users.
 
-4. (Optional) Download a text editor
+3. (Optional) Download a text editor
 
 If you don't already have a text editor downloaded, you'll want one for the workshop. We recommend [Atom](https://atom.io/) or [Sublime Text](https://www.sublimetext.com/). (Either will do).
 
