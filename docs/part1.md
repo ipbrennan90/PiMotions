@@ -16,10 +16,17 @@ By the end of Part 1, you will have the web application communicating with the P
 ## Part 1 Steps
 - Fork and clone this repo to your own machine
 - Set up a resin.io application
-- Configure your Pi
-- Get the web application talking to the Pi!
+- Get the application running locally
+- Configure your Pi with a resinOS image
+- Get the application talking to the Pi!
 
 Since this tutorial is focused on working with a Pi, we've written the code for the web application for you. That way you don't have to fixate on debugging code when you want to learn about a Pi. If you want more of a challenge, you are welcome to modify or extend the existing code in any way you'd like.
+
+### 0. Download Etcher
+
+[Download Etcher](https://etcher.io/)
+
+After the download completes, you don't need to take any further action with Etcher at this time.
 
 ### 1. Fork, clone
 [Detailed steps here if you need them!](https://help.github.com/articles/fork-a-repo/)
@@ -31,23 +38,17 @@ Since this tutorial is focused on working with a Pi, we've written the code for 
 
 ### 2. Set up and configure your resin.io application
 
-1. We're going to need the resin-cli for steps later on, so let's get that downloaded now by copying this command into your terminal:
+1. Sign in to your resin.io account. If you don't have one, complete the [prework](prework.md) and then come back.
 
-```
-npm install --global --production resin-cli
-```
-let that run while we move on through the next steps, we won't need it right away
-
-2.Sign in to your resin.io account. If you don't have one, complete the [prework](prework.md) and then come back.
-
-3. You'll see a prompt to create a new application.
+2. You'll see a prompt to create a new application.
     1. Set Device Type to "Raspberry Pi (v1 or Zero)"
     1. Give your application a name!
     1. Click "Create New Application"
 
-4. Click "Add device" to configure a resinOS image specifically for your application. Choose the recommend resinOS version, then toggle on "Development" under "Select Edition" and "Wifi + Ethernet" under "Network Connection".
-5. Click Advanced, then select the checkbox "Download configuration file only".
-6. Download the configuration file.
+3. Click "Add device" to configure a resinOS image specifically for your application. Choose the recommend resinOS version, then toggle on "Development" under "Select Edition" and "Wifi + Ethernet" under "Network Connection".
+4. Enter the WiFi SSID and passphrase, and then click "Download".
+
+While the resinOS image is downloading, do the following:
 
 5. From your resin.io dashboard, set device configuration variables by clicking on "Fleet Configuration". Add the following two device config variables:
 - NAME: `RESIN_HOST_CONFIG_gpu_mem` VALUE: `128`
@@ -57,70 +58,49 @@ These variables make sure that the camera works on the Pi.
 
 6. Add a resin.io remote repo by copying the **git remote add** command in the top right of your dashboard, and running it in the terminal.
 
-### 3. Make a bootable SD card
-
-We have already flashed a base resinOS image onto your SD cards, but we will need to do some configuration to get our devices online and on our resin.io accounts.
-
-1. Insert your microSD card or microSD card adapter with your microSD card inside into your card reader. You should see your computer recognize it as "resin-boot".
-2. We want to find the location of our sd card, so let's open a terminal window and type:
+7. We're also going to need the resin-cli for steps later on, so let's get that downloaded now by copying this command into your terminal:
 
 ```
-df -h
-```
-this will return a list like this:
-![DF Example](./images/df-ex.png)
-
-You're looking for /Volumes/resin-boot on the right hand side. When you see that, look at the left hand side of the output and you should see a path like /dev/disk2s1. The real path is going to be everything but the trailing s1 (so in our example, it would be `/dev/disk2`). Jot that path down -- you're going to need it in a minute.
-
-3. You'll also need the path of your configuration file you downloaded earlier for the next step. This should be wherever you store your downloads. An example would be `~/Downloads/myapp.config.json`
-
-4. Finally, to sync your sd card with your resin account, enter the following into your terminal after replacing the placeholder values with your values for the SD card location and config file path.
-
-```
-sudo resin config inject <path-to-your-config-file-here> --type raspberry-pi --drive <path-to-your-sd-card-here>
+npm install --global --production resin-cli
 ```
 
-This should looks something like:
+While you're waiting for the resinOS image download to finish, you can move on to the next step, which is to get the app running locally.
 
-```
-sudo resin config inject ~/Downloads/myapp.config.json --type raspberry-pi --drive /dev/disk2
-```
+### 3. Get the app running locally
 
-5. When you see "Done" here, open "resin-boot". You should see a directory inside called "system-connections". Inside "system-connections" you'll see a file either called "sxsw" or "resin-wifi". Open this file in a text editor (on  a Mac you may need to right-click and use the "Open With" option).
+1. Make sure you are in the `app/static` directory.
+2. Make sure Docker is running
+3. Run `npm run docker-build`
 
-The "resin-wifi"/"sxsw" file has one section we need to delete. It is the section labeled "[wifi-security]". Delete that whole block of text. The updated (correct) version should look like this:
+This will build a Docker image based on our Dockerfile and start our containers. You can follow the process by watching your terminal output.
+Once it finishes, your app will be running, so you can navigate to `localhost:80` in your browser to check it out.
 
-```
-[connection]
-id=resin-wifi-01
-type=wifi
+3. Navigate to `localhost:80` in your browser. Click on "Webcam" under "Image Source" and then click "Take a Picture".
 
-[wifi]
-hidden=true
-mode=infrastructure
-ssid=legacy
+Note: We don't need to build the Docker image every time we want to start our app. If you want to start the app without rebuilding the image, you can run `npm run start`, which runs `docker-compose up` for us.
 
-[ipv4]
-method=auto
+`npm run docker-build` may take a few minutes. If your resinOS image has downloaded (from step 2), while you are waiting on the app to build, you can move on to the next step.
 
-[ipv6]
-addr-gen-mode=stable-privacy
-method=auto
-```
-Save your changes to this file. 
+### 4. Make a bootable SD card
 
-6. Then, eject your SD card safely.
+Once the resinOS image has downloaded, we'll use Etcher to flash the image onto our SD card. (You may be asked to grant admin permissions to Etcher.)
 
-### 4. Set up your Pi
+1. Open Etcher.
+2. Insert your SD card into your computer.
+3. Using Etcher, click "Select Image" and find the image you downloaded in step 3 above.
+4. Click "Flash!"
+
+Once Etcher finishes creating the bootable SD card, it will eject it for you.
+
+### 5. Set up your Pi
 
 1. Insert the SD card into your Pi.
 2. Plug your Pi into your computer or a power source using a micro USB cable. (We need power!)
 3. It make take a few minutes, but your Pi should appear on your [resin.io dashboard](https://dashboard.resin.io/apps).
-4. If it doesn't show up and your seeing the led blink 4 times repeatedly, there's something wrong with your wifi configuration, please reach out to one of the workshop leaders and we will resolve the issue with you.
 
 Once your Pi appears in your dashboard you are good to proceed!
 
-### 5. Deploy code to your Pi
+### 6. Deploy code to your Pi
 
 1. Navigate to the root of your project (the `PiMotions/` directory). If you're in the `app/static` directory, run `cd ..; cd ..` to get to `PiMotions/`.
 
@@ -133,9 +113,14 @@ Note: this may ask you to add this host to your list of allowed hosts. Type 'yes
 
 When you see a unicorn appear in your terminal, your push was successful!
 
-Visit your device's Resin page to monitor download progress. This will take ~15 minutes over wifi.
+Visit your device's Resin page to monitor download progress. This will take ~15 minutes over wifi. While this takes place, continue with setup below!
 
-### 6. Get the web app and the Pi talking to each other
+### 7. Get the web app and the Pi talking to each other
+
+We have an web app running locally that can take a picture using our computer's webcam.
+The next step is to get the web app and the Pi talking to each other, so that we can use the Pi's camera to take a picture.
+
+Right now, the "R Pi" button under "Image Source" doesn't do anything. We're about to fix that.
 
 1. Enable a public url for your device. Go into "Actions" on your resin.io device dashboard and click "Enable All Public Device URLs".
 Copy the public url and paste it into `app/static/.env` as the value for `RASPI_URL`.
@@ -145,19 +130,11 @@ RASPI_URL=<your public url here>
 ```
 2. Navigate to `app/static` directory by running `cd app/static` in your terminal.
 
-3. Run `npm run docker-build`
+3. Run `npm run docker-down`, and then run `npm run docker-build`.
 
-This will build a Docker image based on our Dockerfile and start our containers. You can follow the process by watching your terminal output. Once it finishes, your app will be running, so you can navigate to `localhost:80` in your browser to check it out.
+4. Check your device's Resin page -- if the download is complete, proceed!
 
-4. Click on "Webcam" under "Image Source" and then click "Take a Picture".
-
-Note: We don't need to build the Docker image every time we want to start our app. If you want to start the app without rebuilding the image, you can run `npm run start`, which runs `docker-compose up` for us.
-
-`npm run docker-build` may take a few minutes.
-
-5. Check your device's resin.io page -- if the download is complete, you can also test out your "R Pi" button!
-
-6. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
+5. Navigate to `localhost:80` in your browser. Click on "R Pi" under "Image Source", and then click "Take Picture".
 
 :tada::tada::tada:
 
