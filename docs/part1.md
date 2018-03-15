@@ -126,6 +126,6 @@ RASPI_URL=<your public url here>
 
 :tada::tada::tada:
 
-Your web app is now set up to take pictures using your computer's webcam **and** using your Pi.
+Your web app is now set up to take pictures using your computer's webcam **and** using your Pi, give yourself a pat on the back!
 
 **In the [Part 2](part2.md), we'll write code to detect motion using the picamera.**
