@@ -39,15 +39,13 @@ Click the link above, and then click "Get Docker".
 Docker may ask you to restart your computer or "Allow the application to make changes".
 Docker may also ask for "privileged access".
 
-3. [Download Etcher](https://etcher.io/)
+If you have an older Windows version, you may need to install Docker Toolbox. Please follow [the install steps here](https://docs.docker.com/toolbox/toolbox_install_windows/).
 
-After the download completes, you don't need to take any further action with Etcher at this time.
-
-4. [Download NodeJS](https://nodejs.org/en/)
+3. [Download NodeJS](https://nodejs.org/en/)
 
 Download the option recommended for most users.
 
-5. (Optional) Download a text editor
+4. (Optional) Download a text editor
 
 If you don't already have a text editor downloaded, you'll want one for the workshop. We recommend [Atom](https://atom.io/) or [Sublime Text](https://www.sublimetext.com/). (Either will do).
 
@@ -97,17 +95,17 @@ If you're having trouble, here are step-by-step instructions from GitHub:
 - [Generate an SSH key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
 - [Add an SSH key to your GitHub account](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/).
 
-### 5. Create a resin.io account
+### 5. Create a resin.io staging account
 
 To make deploying code to our Pi easy, we're going to use a service called resin.io.
 
-1. Sign up for an account at [resin.io](https://resin.io/).
+1. Sign up for an account at [dashboard.resinstaging.io](https://dashboard.resinstaging.io/).
 
 Ideally, use your GitHub account for authentication. This will make the next step very easy.
 
 2. Add your SSH keys to resin.io.
 
-[Click here](https://dashboard.resin.io/preferences/sshkeys) to add your SSH keys to the resin.io dashboard. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
+[Click here](https://dashboard.resinstaging.io/preferences/sshkeys) to add your SSH keys to the resin.io dashboard. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
 
 **If you've finished this step, you're done with the prework!**
 
@@ -128,15 +126,11 @@ Download the right option for your computer, and then follow the installation pr
 
 Note: Docker may ask you to restart your computer or "Allow the application to make changes".
 
-2. [Download Etcher](https://etcher.io/)
-
-After the download completes, you don't need to take any further action with Etcher at this time.
-
-3. [Download NodeJS](https://nodejs.org/en/)
+2. [Download NodeJS](https://nodejs.org/en/)
 
 Download the option recommended for most users.
 
-4. (Optional) Download a text editor
+3. (Optional) Download a text editor
 
 If you don't already have a text editor downloaded, you'll want one for the workshop. We recommend [Atom](https://atom.io/) or [Sublime Text](https://www.sublimetext.com/). (Either will do).
 
@@ -183,17 +177,17 @@ If you're having trouble, here are step-by-step instructions from GitHub:
 - [Generate an SSH key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
 - [Add an SSH key to your GitHub account](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/).
 
-### 4. Create a resin.io account
+### 4. Create a resin.io staging account
 
 To make deploying code to our Pi easy, we're going to use a service called resin.io.
 
-1. Sign up for an account at [resin.io](https://resin.io/).
+1. Sign up for an account at [dashboard.resinstaging.io](https://dashboard.resinstaging.io/).
 
 Ideally, use your GitHub account for authentication. This will make the next step very easy.
 
 2. Add your SSH keys to resin.io.
 
-Navigate to the ["Preferences" page in the resin.io dashboard](https://dashboard.resin.io/preferences/sshkeys) to add your SSH keys. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
+Navigate to the ["Preferences" page in the resin.io dashboard](https://dashboard.resinstaging.io/preferences/sshkeys) to add your SSH keys. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
 
 **If you've finished this step, you're done with the prework!**
 

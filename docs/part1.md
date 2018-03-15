@@ -22,6 +22,12 @@ By the end of Part 1, you will have the web application communicating with the P
 
 Since this tutorial is focused on working with a Pi, we've written the code for the web application for you. That way you don't have to fixate on debugging code when you want to learn about a Pi. If you want more of a challenge, you are welcome to modify or extend the existing code in any way you'd like.
 
+### 0. Download Etcher
+
+[Download Etcher](https://etcher.io/)
+
+After the download completes, you don't need to take any further action with Etcher at this time.
+
 ### 1. Fork, clone
 [Detailed steps here if you need them!](https://help.github.com/articles/fork-a-repo/)
 
@@ -51,6 +57,12 @@ While the resinOS image is downloading, do the following:
 These variables make sure that the camera works on the Pi.
 
 6. Add a resin.io remote repo by copying the **git remote add** command in the top right of your dashboard, and running it in the terminal.
+
+7. We're also going to need the resin-cli for steps later on, so let's get that downloaded now by copying this command into your terminal:
+
+```
+npm install --global --production resin-cli
+```
 
 While you're waiting for the resinOS image download to finish, you can move on to the next step, which is to get the app running locally.
 
