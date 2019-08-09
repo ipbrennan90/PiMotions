@@ -11,7 +11,8 @@ ENTROPY_SAMPLE = []
 
 app = Flask(__name__)
 CORS(app)
-socketio = SocketIO(app)
+# allowing all origins for development purposes, please adjust this if you are going to run this in production mode
+socketio = SocketIO(app, cors_allowed_origins="*")
 camera = Camera()
 
 @app.route('/take')
@@ -64,6 +65,10 @@ def connect():
     sensitivity = get_sensitivity()
     emit('threshold', {'threshold': threshold})
     emit('sensitivity', {'sensitivity': sensitivity})
+
+@socketio.on('error')
+def error_handler(e):
+    logging.exception(e)
     
     
         
