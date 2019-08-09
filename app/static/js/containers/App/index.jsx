@@ -43,10 +43,8 @@ export default class App extends Component {
     socket.on("connect", () => {
       this.setState({ motionDetection: true });
     });
-    socket.on("motion response", data => console.log(data));
     socket.on("motion-data", data => {
       if (this.state.motionDetector === "on") {
-        console.log(data);
         this.setState({ detectionData: data });
       }
     });
@@ -56,7 +54,7 @@ export default class App extends Component {
     socket.on("threshold", data => {
       this.setState({ threshold: data.threshold });
     });
-    socket.on("motion-detector-exit", data => console.log(data));
+    socket.on("motion-detector-exit", data => console.warn(data));
     socket.on("disconnect", () => {
       this.setState({ motionDetection: false });
     });
