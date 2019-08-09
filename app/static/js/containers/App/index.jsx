@@ -9,7 +9,9 @@ import rpi from '../../../assets/raspberrypi.png'
 import resin from '../../../assets/resin.png'
 import sxsw from '../../../assets/sxsw.png'
 
-const socket = io(process.env.RASPI_URL)
+const socket = io(process.env.RASPI_URL, {
+  transports: ['websocket', 'polling', 'flashsocket']
+})
 
 export default class App extends Component {
   constructor(props) {
@@ -32,8 +34,8 @@ export default class App extends Component {
       threshold: null,
       detectionData: {
         motion: false,
-        pixChanged: 0,
-      },
+        pixChanged: 0
+      }
     }
   }
 
@@ -106,8 +108,8 @@ export default class App extends Component {
         motionDetector: 'off',
         detectionData: {
           motion: false,
-          pixChanged: 0,
-        },
+          pixChanged: 0
+        }
       })
     } else {
       socket.emit('motion-start')
@@ -131,13 +133,13 @@ export default class App extends Component {
       motionDetector,
       sensitivity,
       threshold,
-      detectionData,
+      detectionData
     } = this.state
 
     const motionBackground = detectionData.motion ? 'green' : 'red'
     const motionChange =
       detectionData.pixChanged > 500 ? 500 : detectionData.pixChanged
-    const motionWidth = motionChange / 500 * 100
+    const motionWidth = (motionChange / 500) * 100
     return (
       <div className="container">
         <header className="header">
