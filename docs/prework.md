@@ -1,22 +1,24 @@
-| Table Of Contents                   |
-| ------------------------------------|
-| [Introduction](../README.md)        |
-| Part 0: Prework                     |
-| [Part 1: Pi and Web App](part1.md)  |
-| [Part 2: Motion Detection](part2.md)|
+| Table Of Contents                    |
+| ------------------------------------ |
+| [Introduction](../README.md)         |
+| Part 0: Prework                      |
+| [Part 1: Pi and Web App](part1.md)   |
+| [Part 2: Motion Detection](part2.md) |
 
 # Part 0: Prework
+
 ## Introduction
 
 This prework should only take you 10 - 15 minutes to complete.
 
-We are going to download the necessary tools, and make sure we have a resin.io account ready to go.
+We are going to download the necessary tools, and make sure we have a balena.io account ready to go.
 
 ## Prework Steps
+
 - Download tools
 - Create a GitHub account (if you need to)
-- Generate an SSH key     (if you need to)
-- Create a resin.io account
+- Generate an SSH key (if you need to)
+- Create a balena.io account
 
 ### Follow the instructions based on your operating system:
 
@@ -66,21 +68,28 @@ We need public-key authentication for this tutorial so we can push code to our R
 - You can check to see if you have an existing SSH key by running `ls -al ~/.ssh` in your Git Bash terminal. This will list the files in your .ssh directory. Look for a file that looks like `id_rsa.pub`. If you see one, congratulations! You have an public SSH key.
 
 - If you do not have an SSH key or you just created a new GitHub account in Step 1 above, you should create one by running `ssh-keygen` in your terminal. `ssh-keygen` will return output similar to the following:
+
 ```
   Generating public/private rsa key pair.
   Enter file in which to save the key:
 ```
-Press enter. You'll then see another prompt:  
+
+Press enter. You'll then see another prompt:
+
 ```
 Enter passphrase (empty for no passphrase):
 ```
+
 You can press enter to proceed without a passphrase, or type in a passphrase and press enter. You'll see a final prompt:
+
 ```
 Enter same passphrase again:
 ```
+
 If you left the passphrase empty, press enter. If you entered a passphrase earlier, re-enter it here.
 
 **To add your SSH key to your GitHub account:**
+
 - Run `clip < ~/.ssh/id_rsa.pub` in your terminal to copy it.
 
 (If the `clip` command isn't working, you can run `cat ~/.ssh/id_rsa.pub` instead, which will print your public key to the screen. Copy the key, making sure you copy the entire output, including `ssh-rsa`).
@@ -92,27 +101,28 @@ If you left the passphrase empty, press enter. If you entered a passphrase earli
 **Helpful Links**
 
 If you're having trouble, here are step-by-step instructions from GitHub:
+
 - [Generate an SSH key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
 - [Add an SSH key to your GitHub account](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/).
 
-### 5. Create a resin.io staging account
+### 5. Create a balena.io account
 
-To make deploying code to our Pi easy, we're going to use a service called resin.io.
+To make deploying code to our Pi easy, we're going to use a service called balena.io.
 
-1. Sign up for an account at [dashboard.resinstaging.io](https://dashboard.resinstaging.io/).
+1. Sign up for an account at [dashboard.balena-cloud.com](https://dashboard.balena-cloud.com/).
 
 Ideally, use your GitHub account for authentication. This will make the next step very easy.
 
-2. Add your SSH keys to resin.io.
+2. Add your SSH keys to balena.io.
 
-[Click here](https://dashboard.resinstaging.io/preferences/sshkeys) to add your SSH keys to the resin.io dashboard. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
+[Click here](https://dashboard.balena-cloud.com/preferences/sshkeys) to add your SSH keys to the balena.io dashboard. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
 
 **If you've finished this step, you're done with the prework!**
 
 [Take me to Part 1!](part1.md)
+
 </p>
 </details>
-
 
 <details><summary>For OS X/Linux users</summary>
 <p>
@@ -151,21 +161,28 @@ We need public-key authentication for this tutorial so we can push code to our R
 - You can check to see if you have an existing SSH key by running `ls -al ~/.ssh` in your terminal. This will list the files in your .ssh directory. Look for a file that looks like `id_rsa.pub`. If you see one, congratulations! You have an public SSH key.
 
 - If you do not have an SSH key or you just created a new GitHub account in Step 1 above, you should create one by running `ssh-keygen` in your terminal. `ssh-keygen` will return output similar to the following:
+
 ```
   Generating public/private rsa key pair.
   Enter file in which to save the key:
 ```
-Press enter. You'll then see another prompt:  
+
+Press enter. You'll then see another prompt:
+
 ```
 Enter passphrase (empty for no passphrase):
 ```
+
 You can press enter to proceed without a passphrase, or type in a passphrase and press enter. You'll see a final prompt:
+
 ```
 Enter same passphrase again:
 ```
+
 If you left the passphrase empty, press enter. If you entered a passphrase earlier, re-enter it here.
 
 **To add your SSH key to your GitHub account:**
+
 - Run `cat ~/.ssh/id_rsa.pub` in your terminal, which will output the key to the terminal.
 - Copy the output. Make sure you copy the entire output, including `ssh-rsa`.
 - Go to your GitHub account, click on your profile avatar in the upper right-hand corner, select "Settings", and then click on "SSH and GPG Keys".
@@ -174,20 +191,21 @@ If you left the passphrase empty, press enter. If you entered a passphrase earli
 **Helpful Links**
 
 If you're having trouble, here are step-by-step instructions from GitHub:
+
 - [Generate an SSH key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
 - [Add an SSH key to your GitHub account](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/).
 
-### 4. Create a resin.io staging account
+### 4. Create a balena.io staging account
 
-To make deploying code to our Pi easy, we're going to use a service called resin.io.
+To make deploying code to our Pi easy, we're going to use a service called balena.io.
 
-1. Sign up for an account at [dashboard.resinstaging.io](https://dashboard.resinstaging.io/).
+1. Sign up for an account at [dashboard.balenastaging.io](https://dashboard.balenap-cloud.com/).
 
 Ideally, use your GitHub account for authentication. This will make the next step very easy.
 
-2. Add your SSH keys to resin.io.
+2. Add your SSH keys to balena.io.
 
-Navigate to the ["Preferences" page in the resin.io dashboard](https://dashboard.resinstaging.io/preferences/sshkeys) to add your SSH keys. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
+Navigate to the ["Preferences" page in the balena.io dashboard](https://dashboard.balena-cloud.com/preferences/sshkeys) to add your SSH keys. Either select "Import from GitHub" (if you authenticated with GitHub), or enter your public SSH key manually. If you are entering your key manually, you can paste the key you copied in the earlier step, or use `cat ~/.ssh/id_rsa.pub` in the terminal to print the key to the screen. Make sure you copy the whole thing, including `ssh-rsa`.
 
 **If you've finished this step, you're done with the prework!**
 
