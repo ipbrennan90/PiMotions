@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './style.css'
 
-const PiConditional = ({ chooseCam, selected }) => (
+const PiConditional = ({ chooseCam }) => (
   <div>
     <h3 className="center">Image Source</h3>
     <div className="pi-conditional">

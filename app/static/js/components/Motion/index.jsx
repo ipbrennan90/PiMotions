@@ -10,7 +10,7 @@ const Motion = ({
   sensitivity,
   handleSensitivityChange,
   threshold,
-  handleThresholdChange,
+  handleThresholdChange
 }) => (
   <div className="wrapper">
     <button className="button trigger" onClick={turnOnMotion}>
@@ -21,7 +21,7 @@ const Motion = ({
         className="motiondetected"
         style={{
           width: `${motionWidth}%`,
-          backgroundColor: `${motionBackground}`,
+          backgroundColor: `${motionBackground}`
         }}
       />
     </div>
@@ -62,7 +62,7 @@ Motion.propTypes = {
   sensitivity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   handleSensitivityChange: PropTypes.func,
   threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  handleThresholdChange: PropTypes.func,
+  handleThresholdChange: PropTypes.func
 }
 
 export default Motion
