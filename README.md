@@ -9,7 +9,7 @@
 
 ## Introduction
 
-We're excited that you are joining us on **March 10, 2018** to dive into the wonders of the [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/), the tiniest Raspberry Pi.
+We're excited that you are diving into the wonders of the [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/), and computer vision!
 
 - In [Part 1](docs/part1.md) of this workshop, we're going to set up a web application that can take a picture using our Pi with the click of a button.
 - In [Part 2](docs/part2.md), we will write code to detect motion using the camera connected to the Pi.
@@ -35,4 +35,3 @@ Make sure you do the [prework](docs/prework.md) before proceeding to [Part 1](do
 ---
 
 [Take me to the prework!](docs/prework.md)
-blah

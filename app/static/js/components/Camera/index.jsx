@@ -23,7 +23,7 @@ const Camera = ({ innerRef, takeOnPi, image }) => (
 Camera.propTypes = {
   innerRef: PropTypes.func,
   takeOnPi: PropTypes.bool,
-  image: PropTypes.string,
+  image: PropTypes.string
 }
 
 export default Camera

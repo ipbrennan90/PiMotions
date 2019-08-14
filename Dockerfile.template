@@ -11,4 +11,3 @@ COPY ./server/server.py /server/server.py
 COPY ./server/motion_detector.py /server/motion_detector.py
 COPY ./server/camera.py /server/camera.py
 CMD ["python", "server.py"]
-
