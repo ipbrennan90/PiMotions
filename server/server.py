@@ -4,6 +4,9 @@ from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO, emit
 from motion_detector import boot_motion, stop_detector, start_detector, set_sensitivity, set_threshold, get_threshold, get_sensitivity
 from camera import Camera
+import eventlet 
+
+eventlet.monkey_patch()
 
 RUN_CAM = False
 ENTROPY_SAMPLE = []
@@ -12,7 +15,7 @@ ENTROPY_SAMPLE = []
 app = Flask(__name__)
 CORS(app)
 # allowing all origins for development purposes, please adjust this if you are going to run this in production mode
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 camera = Camera()
 
 @app.route('/take')

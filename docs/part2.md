@@ -1,19 +1,21 @@
-| Table Of Contents                   |
-| ------------------------------------|
-| [Introduction](../README.md)           |
-| [Part 0: Prework](prework.md)       |
-| [Part 1: Pi and Web App](part1.md)  |
-| Part 2: Motion Detection            |
+| Table Of Contents                  |
+| ---------------------------------- |
+| [Introduction](../README.md)       |
+| [Part 0: Prework](prework.md)      |
+| [Part 1: Pi and Web App](part1.md) |
+| Part 2: Motion Detection           |
 
 # Part 2: Motion Detection
+
 ## Introduction
 
 In Part 2 of this tutorial, we are going to write code to detect motion using the camera connected to your Pi.
 By the end of Part 2, you will have an application that will display whether or not motion was detected in front of the camera.
 
 ## Part 2 Steps
+
 - Write some code
-- Resin sync
+- Push code to balena remote
 - Rinse, repeat
 
 In this section, we'll be working in the `server` directory, meaning that the code we write in Part 2 will be code that will run on our Pi, not on our front end. The front end code has been written for you, so once you get the Pi code working correctly, you'll have a fully functioning motion-detecting camera application, complete with front end controls for sensitivity!
@@ -38,10 +40,12 @@ _from PiMotions/server/camera.py_:
 
 `self` is the instance of the camera class.
 `self.device` is set to an instance of PiCamera in the `start` method.
+
 ```python
     self.device = PiCamera()
 ```
- `picamera` is a library we're imported to give us a python interface to the Raspberry Pi camera module. By setting `self.device = PiCamera()` we now have full-fledged camera functionality on instances of our Camera class. That allows us to call `self.device.capture` to take images.
+
+`picamera` is a library we're imported to give us a python interface to the Raspberry Pi camera module. By setting `self.device = PiCamera()` we now have full-fledged camera functionality on instances of our Camera class. That allows us to call `self.device.capture` to take images.
 
 The other library we need to highlight is PIL, or [Python Imaging Library](http://effbot.org/imagingbook/pil-index.htm), which we need for image processing.
 
@@ -55,7 +59,8 @@ If we wanted to, we could access a specific pixel in the `im_buffer` by providin
   y = 12
   print(image_buffer[x,y])
 ```
-`print(image_buffer[x,y])` could print out something like ```(10, 232, 218)```, representing the R, G, and B values respectively of the pixel at that `x,y` location.
+
+`print(image_buffer[x,y])` could print out something like `(10, 232, 218)`, representing the R, G, and B values respectively of the pixel at that `x,y` location.
 
 In case you were wondering, the color rgb(10, 232, 218) looks like this!
 
@@ -71,11 +76,11 @@ We're using sockets in this application, meaning that we're using real-time even
 
 At a high level, you can think about sockets like a line of communication that stays open between the web app and the Pi. The web app and the Pi are listening on this line of communication for different events.
 
-We can see an example of this communication by examining the code  excerpted below from `server.py`.
+We can see an example of this communication by examining the code excerpted below from `server.py`.
 
 When the web app emits the 'motion-start' event (line 1), the Pi will take certain actions, like calling the function `start_detector()` and `boot_motion()` (lines 10 and 11 in the example below).
 
-When the function `send_motion_event` (line 4) is called, the Pi emits a message of its own back to the web app (line 5), sending a ```"motion-data"``` message with some data for the web app to display.
+When the function `send_motion_event` (line 4) is called, the Pi emits a message of its own back to the web app (line 5), sending a `"motion-data"` message with some data for the web app to display.
 
 **Code Example 2:**
 _from PiMotions/server/server.py_:
@@ -90,9 +95,11 @@ All of our code is going to be written in motion-detector.py. When we get the co
 Open motion-detector.py in your text editor.
 
 #### **A few things to notice before we start writing code:**
+
 ##### 1) Firstly, we have values for threshold, sensitivity, and whether or not our motion detector is running at the top of the file.
 
 _from PiMotions/server/motion-detector.py_:
+
 ```python
 # Threshold is the threshold of difference between color values in two pixels, beyond which we consider the pixels to be significantly different
 THRESHOLD = 10
@@ -104,7 +111,7 @@ SENSITIVITY = 20
 RUN_DETECTOR = True
 ```
 
-##### 2) Secondly, remember ```boot_motion(send_motion_event, motion_exit)``` from **Code Example 2**?
+##### 2) Secondly, remember `boot_motion(send_motion_event, motion_exit)` from **Code Example 2**?
 
 `boot_motion` is the function we call when our Pi gets a message from the web app to 'motion-start'.
 
@@ -120,9 +127,9 @@ In motion_detector.py (excerpted below in **Code Example 4**), we can see that t
 _from PiMotions/server/motion-detector.py_:
 ![Code Example 4](./images/ex-4.png)
 
-In addition to ```boot_motion```, we have some other utility functions at the bottom of the motion-detector.py file written for us. We don't need to edit these, but you can take a quick look to see what's there.
+In addition to `boot_motion`, we have some other utility functions at the bottom of the motion-detector.py file written for us. We don't need to edit these, but you can take a quick look to see what's there.
 
-##### 3) Finally, inside of the motion detector class, the ```start``` method has also been written for us.
+##### 3) Finally, inside of the motion detector class, the `start` method has also been written for us.
 
 **Code Example 5:**
 _from PiMotions/server/motion-detector.py_:
@@ -135,6 +142,7 @@ In the `start` method, we first start the camera (line 8 in **Code Example 5** a
 The camera is an instance of the Camera class we looked at in **Code Example 1**.
 
 Then, we have these lines:
+
 ```python
 def start
     # ...
@@ -142,6 +150,7 @@ def start
     # ...
     t.start()
 ```
+
 What's going on here?
 
 `t = Thread(target=self.detector)` is creating a new thread called `t`. Setting the `target` of the thread to `self.detector` means that `self.detector` is the function that will get called when the thread is started (`t.start()`).
@@ -149,7 +158,7 @@ What's going on here?
 > **What's a thread?**
 >
 > A thread is an ordered sequence of instructions for a computer. When we have more than one thread in a program, we can execute multiple sequences as if they were running at the same time.
-_There's a little more to it, but that's all you need to know for this workshop_.
+> _There's a little more to it, but that's all you need to know for this workshop_.
 
 > **Why are we creating a new thread here?**
 >
@@ -158,13 +167,13 @@ _There's a little more to it, but that's all you need to know for this workshop_
 So when `t.start()`, gets called, `self.detector` will get called. `self.detector` isn't yet implemented, but it's the first method we're going to write together in the next section.
 
 > **If you need a quick recap, the steps we've covered so far to start the motion-detecting process look like this:**
-> 1) A user clicks the "Turn Motion Detection On" button.
-> 2) The front end sends the Pi a message to 'motion-start'.
-> 3) The Pi calls `start_detector` and `boot_motion`.
-> 4) `start_detector` sets our global variable `RUN_DETECTOR` to true.
-> 5) `boot_motion` creates a new instance of the `MotionDetector` class, and then calls `start` on that instance.
-> 6) The `start` method kicks off a new thread, which calls `self.detector`.
-
+>
+> 1. A user clicks the "Turn Motion Detection On" button.
+> 2. The front end sends the Pi a message to 'motion-start'.
+> 3. The Pi calls `start_detector` and `boot_motion`.
+> 4. `start_detector` sets our global variable `RUN_DETECTOR` to true.
+> 5. `boot_motion` creates a new instance of the `MotionDetector` class, and then calls `start` on that instance.
+> 6. The `start` method kicks off a new thread, which calls `self.detector`.
 
 #### Okay, we're ready to write some code!
 
@@ -200,6 +209,7 @@ class MotionDetector:
 ```
 
 ### The `detector` method
+
 The first method we're going to write is the `detector` method.
 
 `detector` is going to have a loop that runs based on the `RUN_DETECTOR` variable. `RUN_DETECTOR` is either `True` or `False` depending on whether the user turns the motion detector on or off in the front end.
@@ -222,13 +232,16 @@ def detector(self):
         time.sleep(1)
     self.stop()
 ```
+
 Here, we are hardcoding a pixel change value of 30, and we're saying motion_detected is always true. We're doing this inside of an loop with `while RUN_DETECTOR`, so once we deploy this code to the Pi and we press "Turn Motion Detector On", the Pi should consistently send `{'pixChanged': 30, 'motion': true}` to the front end every second. `time.sleep(1)` makes the loop wait a second before emitting the next event.
 
-Now, let's push our code to our Pi using the resin cli we installed in Part 1 of the workshop. To do this, copy and paste this command into your terminal.
+Now, let's push our code to our Pi using the balena git remote we added in Part 1 of the workshop. To do this type the following into the command line.
+
 ```
-resin sync --source ./server --destination /server
+git push balena master
 ```
-This sync may take a few minutes, but you can can watch the progress in your resin.io device dashboard.
+
+This sync may take a few minutes, but you can can watch the progress in your balena.io device dashboard.
 
 Once the sync completes, go to the web app at `localhost:80` in your browser.
 
@@ -265,6 +278,7 @@ def detector(self):
         self.cb(pixels_changed, motion_detected)
     self.stop()
 ```
+
 This is what our final `detector` code will be. Now, let's implement `check_for_motion`, since we use it in `detector` but we haven't implemented it yet.
 
 ### The `check_for_motion` method
@@ -274,6 +288,7 @@ Based on our code in `detector` (copied below), We know `check_for_motion` needs
 ```python
 pixels_changed, motion_detected = self.check_for_motion(image_one, image_two)
 ```
+
 The objective for `check_for_motion` will be to have it compare the two images, and then return two values for the number of pixels changed and whether or not motion was detected.
 
 To wire things up, let's again use some fake data.
@@ -286,13 +301,17 @@ def check_for_motion(self, image_one, image_two):
     motion_detected = True
     return pixels_changed, motion_detected
 ```
-Then, run your resin sync command in the terminal again:
+
+Then, push up your code to balena again:
+
 ```
-resin sync --source ./server --destination /server
+git push balena master
 ```
+
 Once the sync is complete, we can go back to the browser at `localhost:80` (you may need to do a hard refresh). We should see the same behavior as we saw last time, because we are using the same fake values.
 
 Right now, our code should look like this:
+
 ```python
 class MotionDetector:
 
@@ -365,11 +384,13 @@ Imagine that we had a picture that was 4 pixels wide and 4 pixels tall. It would
 ![Code Example 6](./images/pic.png)
 
 To access the pixel in the first row, first column, we could write
+
 ```python
 x_coord = 0
 y_coord = 0
 pic[x_coord, y_coord] # pic[0,0]
 ```
+
 In our `change_motion` method, we're examining the pictures pixel-by-pixel by using two nested loops.
 
 We start by looking at the pixel at [0,0] for image_one and compare that to the pixel in the same location in image_two.
@@ -385,7 +406,7 @@ We append that value to the `changed_pixels` array, which at the end of our loop
 changed_pixels = [True, False, True, True, False ...]
 ```
 
-We proceed through the nested loops, comparing each of the pixels in  image_one to the pixels in the same location in image_two.
+We proceed through the nested loops, comparing each of the pixels in image_one to the pixels in the same location in image_two.
 
 ```python
 # excerpt of method
@@ -404,7 +425,7 @@ We proceed through the nested loops, comparing each of the pixels in  image_one 
             # ...
 ```
 
-When we have traversed all of the pixels in image_one and image_two  row-by-row, we will have a big array of `True` and `False` values stored in the `changed_pixels` array.
+When we have traversed all of the pixels in image_one and image_two row-by-row, we will have a big array of `True` and `False` values stored in the `changed_pixels` array.
 
 We then will count all of the `True` values in the `changed_pixels` array with the following line:
 
@@ -414,7 +435,7 @@ total_changed_pixels = sum(changed_pixels)
 
 If the count of `True` values (which is the total number of significantly different pixels in our two images) exceeds our `SENSITIVITY`, `check_for_motion` will return `True`. Otherwise, it will return `False`.
 
->Note: The `SENSITIVITY` value is set at the top of this file, and can be updated by the user on the front end.
+> Note: The `SENSITIVITY` value is set at the top of this file, and can be updated by the user on the front end.
 
 ```python
 if total_changed_pixels > SENSITIVITY:
@@ -447,9 +468,10 @@ def pix_diff(self, pixel_one, pixel_two):
     else:
         return False
 ```
-When we pass pixel_one and pixel_two to the `pix_diff` method, they are each collections of RGB values. ```(R, G, B)```
 
-Remember our friend ```(10, 232, 218)``` from the camera.py section?
+When we pass pixel_one and pixel_two to the `pix_diff` method, they are each collections of RGB values. `(R, G, B)`
+
+Remember our friend `(10, 232, 218)` from the camera.py section?
 
 ![Color Sample](./images/color.png)
 
@@ -457,9 +479,10 @@ Let's assign that to a variable called `pixel`.
 
 ```python
  # index: 0   1    2
- # color: R   G    B  
+ # color: R   G    B
 pixel = (10, 232, 218)
 ```
+
 To access the green value of `pixel`, we can call `pixel[1]`. The collection of values is 0-indexed, meaning that to get the first value, we'd use `pixel[0]`. To get the second value (the green value, the one we want), we use `pixel[1]`.
 
 ```python
@@ -483,6 +506,7 @@ If the absolute value of the difference in green values is greater than our `THR
 With `pix_diff` completed, we should be done!
 
 Our final code for `MotionDetector` should now look like this:
+
 ```python
 class MotionDetector:
 
@@ -535,9 +559,10 @@ class MotionDetector:
         self.stop()
 ```
 
-Do a final resin sync to get our code changes deployed to the Pi:
+Do a final push to the balen remote to get our code changes deployed to the Pi:
+
 ```
-resin sync --source ./server --destination /server
+git push balena master
 ```
 
 ## Once that last sync completes, you're done! :tada:
@@ -555,14 +580,15 @@ Try experimenting with adjusting the sensitivity levels and the threshold levels
 
 :tada::tada::tada::tada:
 
->Quick Note: For your reference, the completed code is on a branch called `motion-detection-complete`.
-You can checkout that branch by running `git checkout motion-detection-complete` in your terminal.
+> Quick Note: For your reference, the completed code is on a branch called `motion-detection-complete`.
+> You can checkout that branch by running `git checkout motion-detection-complete` in your terminal.
 
 ### 3. What do I do now?
 
 If you get to the end of this workshop and still want more, there are plenty of things you can do to extend the application.
 
 **Here's a few ideas, but the possibilities are pretty endless.**
+
 1. Edit the front end if you like design.
 2. Modify the motion-detecting algorithm to detect motion differently. (Other methods might compare entropy in the images, or leverage 3rd party libraries).
 3. Add additional features, like using a 3rd-party service like Twilio to text you when your camera senses motion!

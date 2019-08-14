@@ -14,28 +14,18 @@ const socket = io(process.env.RASPI_URL, {
 })
 
 export default class App extends Component {
-  constructor(props) {
-    super(props)
-
-    this.handleClick = this.handleClick.bind(this)
-    this.chooseCam = this.chooseCam.bind(this)
-    this.turnOnMotion = this.turnOnMotion.bind(this)
-    this.addPic = this.addPic.bind(this)
-    this.camera = null
-
-    this.state = {
-      image: sxsw,
-      webCam: false,
-      takeOnPi: true,
-      pics: [],
-      motionDetection: false,
-      motionDetector: 'off',
-      sensitivity: null,
-      threshold: null,
-      detectionData: {
-        motion: false,
-        pixChanged: 0
-      }
+  state = {
+    image: sxsw,
+    webCam: false,
+    takeOnPi: true,
+    pics: [],
+    motionDetection: false,
+    motionDetector: 'off',
+    sensitivity: null,
+    threshold: null,
+    detectionData: {
+      motion: false,
+      pixChanged: 0
     }
   }
 
@@ -43,7 +33,6 @@ export default class App extends Component {
     socket.on('connect', () => {
       this.setState({ motionDetection: true })
     })
-    socket.on('motion response', data => console.log(data))
     socket.on('motion-data', data => {
       if (this.state.motionDetector === 'on') {
         console.log(data)
@@ -56,7 +45,7 @@ export default class App extends Component {
     socket.on('threshold', data => {
       this.setState({ threshold: data.threshold })
     })
-    socket.on('motion-detector-exit', data => console.log(data))
+    socket.on('motion-detector-exit', data => console.warn(data))
     socket.on('disconnect', () => {
       this.setState({ motionDetection: false })
     })
@@ -78,7 +67,7 @@ export default class App extends Component {
     }
   }
 
-  handleClick() {
+  handleClick = () => {
     if (this.state.takeOnPi) {
       Pi.takePicture().then(picture => {
         this.setState({ image: picture.data.src })
@@ -93,15 +82,15 @@ export default class App extends Component {
     }
   }
 
-  handleSensitivityChange(e) {
+  handleSensitivityChange = e => {
     socket.emit('set-sensitivity', e.target.value)
   }
 
-  handleThresholdChange(e) {
+  handleThresholdChange = e => {
     socket.emit('set-threshold', e.target.value)
   }
 
-  turnOnMotion() {
+  turnOnMotion = () => {
     if (this.state.motionDetector === 'on') {
       socket.emit('stop-cam')
       this.setState({
@@ -117,19 +106,10 @@ export default class App extends Component {
     }
   }
 
-  addPic(data) {
-    const { pic } = data
-    this.setState(prevState => {
-      pics: prevState.pics.push(pic)
-    })
-  }
-
   render() {
     const {
-      isPi,
       takeOnPi,
       image,
-      motionDetection,
       motionDetector,
       sensitivity,
       threshold,
@@ -151,9 +131,11 @@ export default class App extends Component {
           takeOnPi={takeOnPi}
           image={image}
         />
-        <button className="button trigger icon" onClick={this.handleClick}>
-          Take Picture
-        </button>
+        {!this.state.motionDetector && (
+          <button className="button trigger icon" onClick={this.handleClick}>
+            Take Picture
+          </button>
+        )}
 
         {this.state.motionDetection && (
           <Motion
