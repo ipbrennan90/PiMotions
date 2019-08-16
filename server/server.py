@@ -33,8 +33,8 @@ def take_picture():
 @socketio.on('motion-start')
 def check_motion():
     @copy_current_request_context
-    def send_motion_event(pixChanged, motion_detected):
-        emit('motion-data', {'pixChanged': pixChanged, 'motion': motion_detected})
+    def send_motion_event(pix_changed, motion_detected):
+        emit('motion-data', {'pixChanged': pix_changed, 'motion': motion_detected})
 
     @copy_current_request_context
     def motion_exit(e):
