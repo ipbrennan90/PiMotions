@@ -4,4 +4,4 @@ picamera==1.13
 Pillow==6.2.0
 requests>=2.20.0
 flask-socketio==4.2.1
-eventlet==0.25.0
+eventlet==0.31.0
